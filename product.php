@@ -13,9 +13,9 @@ while ($row = mysqli_fetch_assoc($result)) {
 ?>
 
     <!-- Header Start -->
-    <div class="container-fluid bg-breadcrumb" style="background-image:url(img/pro/all0.jpg)">
+    <div class="container-fluid bg-breadcrumb" style="background-image:url(admin/<?php echo $row['img'] ?>)">
         <div class="container text-center py-5" style="max-width: 900px;">
-            <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s"><?php echo $row['p_name'] ?></h4>
+            <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s"><?php echo $row['name'] ?></h4>
             <ol class="breadcrumb d-flex justify-content-center mb-0 wow fadeInDown" data-wow-delay="0.3s">
                 <li class="breadcrumb-item"><a href="index.php">Home</a></li>
                 <!-- <li class="breadcrumb-item"><a href="#">Pages</a></li> -->
@@ -44,9 +44,20 @@ while ($row = mysqli_fetch_assoc($result)) {
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                             Buy Now
                         </button>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        <div class="cart-container" data-product="<?= $row['id'] ?>">
+
+                            <button class="add-btn btn btn-primary">Add to Cart</button>
+
+                            <div class="qty-box" style="display:none;">
+                                <button class="minus">-</button>
+                                <span class="qty">1</span>
+                                <button class="plus">+</button>
+                            </div>
+
+                        </div>
+                        <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                             Add to Cart
-                        </button>
+                        </button> -->
 
                     </div>
                 </div>

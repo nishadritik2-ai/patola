@@ -108,7 +108,88 @@
  </div>
 
 
+ <script>
+document.addEventListener("click", function(e){
 
+    let container = e.target.closest(".cart-container");
+    if(!container) return;
+
+    let product_id = container.dataset.product;
+    let qtySpan = container.querySelector(".qty");
+    let addBtn = container.querySelector(".add-btn");
+    let qtyBox = container.querySelector(".qty-box");
+
+    let qty = parseInt(qtySpan?.innerText || 0);
+
+    if(e.target.classList.contains("add-btn")){
+        qty = 1;
+        sendUpdate(product_id, qty, container);
+    }
+
+    if(e.target.classList.contains("plus")){
+        qty++;
+        sendUpdate(product_id, qty, container);
+    }
+
+    if(e.target.classList.contains("minus")){
+        qty--;
+        sendUpdate(product_id, qty, container);
+    }
+
+    if(e.target.classList.contains("remove")){
+        qty = 0;
+        sendUpdate(product_id, qty, container);
+    }
+
+});
+
+function sendUpdate(product_id, qty, container){
+
+fetch("cart_action.php",{
+method:"POST",
+headers:{"Content-Type":"application/x-www-form-urlencoded"},
+body:"product_id="+product_id+"&quantity="+qty
+})
+.then(res=>res.json())
+.then(data=>{
+
+if(data.status=="updated"){
+
+let qtySpan=container.querySelector(".qty");
+let addBtn=container.querySelector(".add-btn");
+let qtyBox=container.querySelector(".qty-box");
+
+if(qty<=0){
+container.remove();
+if(addBtn){addBtn.style.display="block";}
+if(qtyBox){qtyBox.style.display="none";}
+}else{
+if(qtySpan) qtySpan.innerText=qty;
+if(addBtn){addBtn.style.display="none";}
+if(qtyBox){qtyBox.style.display="flex";}
+}
+
+document.getElementById("cartCount").innerText=data.cart_count;
+updateTotal();
+
+}
+
+});
+}
+
+function updateTotal(){
+let subtotal=0;
+document.querySelectorAll(".item").forEach(item=>{
+let price=parseInt(item.querySelector(".price")?.innerText||0);
+let qty=parseInt(item.querySelector(".qty")?.innerText||0);
+subtotal+=price*qty;
+});
+let sub=document.getElementById("subtotal");
+let grand=document.getElementById("grandTotal");
+if(sub) sub.innerText=subtotal;
+if(grand) grand.innerText=subtotal;
+}
+</script>
 
 
  <!-- JavaScript Libraries -->

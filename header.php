@@ -86,6 +86,34 @@ ini_set('display_errors', 1);
 
 <body>
 
+
+    <?php
+    $cartCount = 0;
+    if (isset($_SESSION['customer_id'])) {
+        $uid = $_SESSION['customer_id'];
+        $res = mysqli_query($con, "SELECT SUM(quantity) as total FROM carts WHERE user_id='$uid'");
+        $data = mysqli_fetch_assoc($res);
+        $cartCount = $data['total'] ?? 0;
+    }
+    ?>
+
+    <style>
+        .cart-icon {
+            position: relative;
+            font-size: 22px;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: red;
+            color: white;
+            font-size: 12px;
+            padding: 3px 6px;
+            border-radius: 50%;
+        }
+    </style>
     <!-- Spinner Start -->
     <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
@@ -154,6 +182,10 @@ ini_set('display_errors', 1);
 
                     <?php } ?>
 
+                    <a href="cart.php" class="cart-icon">
+                        🛒
+                        <span class="cart-badge" id="cartCount"><?= $cartCount ?></span>
+                    </a>
 
                 </div>
             </div>
