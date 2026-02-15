@@ -41,20 +41,23 @@ while ($row = mysqli_fetch_assoc($result)) {
                         <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                             Buy Now
                         </button> -->
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                            Buy Now
-                        </button>
-                        <div class="cart-container" data-product="<?= $row['id'] ?>">
-
-                            <button class="add-btn btn btn-primary">Add to Cart</button>
-
-                            <div class="qty-box" style="display:none;">
-                                <button class="minus">-</button>
-                                <span class="qty">1</span>
-                                <button class="plus">+</button>
+                        <div class="row g-2">
+                            <div class="col-12 d-flex gap-2">
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    Buy Now
+                                </button>
+                                <div class="cart-container" data-product="<?= $row['id'] ?>">
+                                    <button class="add-btn btn btn-primary">Add to Cart</button>
+                                    <div class="qty-box" style="display:none;padding: 5px 15px;border: 1px solid #000;border-radius: 21px;">
+                                        <button class="minus btn btn-sm btn-outline-secondary" aria-label="Decrease quantity">−</button>
+                                        <span class="qty mx-2">1</span>
+                                        <button class="plus btn btn-sm btn-outline-secondary" aria-label="Increase quantity">+</button>
+                                    </div>
+                                </div>
                             </div>
-
                         </div>
+
+
                         <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                             Add to Cart
                         </button> -->
