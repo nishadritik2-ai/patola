@@ -9,6 +9,7 @@ if (isset($_POST['submit'])) {
     $address  = mysqli_real_escape_string($con, $_POST['address']);
     $email    = mysqli_real_escape_string($con, $_POST['email']);
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $status = 0;
 
     // Check Empty Fields
     if (empty($name) || empty($phone) || empty($address) || empty($email) || empty($_POST['password'])) {
@@ -25,8 +26,8 @@ if (isset($_POST['submit'])) {
 
         } else {
 
-            $sql = "INSERT INTO customer (name, phone, address, email, password) 
-                    VALUES ('$name','$phone','$address','$email','$password')";
+            $sql = "INSERT INTO customer (name, phone, address, email, password, status) 
+                    VALUES ('$name','$phone','$address','$email','$password','$status')";
 
             $result = mysqli_query($con, $sql);
 

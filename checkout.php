@@ -1,30 +1,221 @@
-<!DOCTYPE html>
-<html>
-<head>
+<?php
+include "admin/connection.php";
+
+/* ================= LOGIN CHECK ================= */
+if (!isset($_SESSION['customer_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
+$user_id = $_SESSION['customer_id'];
+
+/* ================= GET CUSTOMER DATA ================= */
+$customerQuery = mysqli_query($con, "SELECT * FROM customer WHERE id='$user_id' LIMIT 1");
+$customer = mysqli_fetch_assoc($customerQuery);
+
+/* ================= CHECK CUSTOMER STATUS ================= */
+if ($customer['status'] != 1) {
+    echo "<script>
+            alert('Your account is not yet approved');
+            window.location='cart.php';
+          </script>";
+    exit;
+}
+
+/* ================= GET CART DATA ================= */
+$query = mysqli_query($con, "
+    SELECT c.*, p.name, p.price, p.img
+    FROM carts c
+    JOIN product p ON c.product_id = p.id
+    WHERE c.user_id = '$user_id'
+");
+
+$total = 0;
+$cart = [];
+
+while ($row = mysqli_fetch_assoc($query)) {
+    $cart[] = $row;
+    $total += $row['price'] * $row['quantity'];
+}
+
+if (empty($cart)) {
+    header("Location: cart.php");
+    exit;
+}
+
+/* ================= HANDLE ORDER SUBMISSION ================= */
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+
+    $name    = mysqli_real_escape_string($con, $_POST['name']);
+    $phone   = mysqli_real_escape_string($con, $_POST['phone']);
+    $address = mysqli_real_escape_string($con, $_POST['address']);
+
+    $payment_method = "razorpay";
+    $status = "Pending";
+    $payment_status = "Unpaid";
+    $order_date = date("Y-m-d H:i:s");
+
+    /* ===== PREPARE PRODUCT JSON ===== */
+    $products = [];
+
+    foreach ($cart as $item) {
+        $products[] = [
+            "product_id" => $item['product_id'],
+            "name"       => $item['name'],
+            "img"        => $item['img'],
+            "price"      => $item['price'],
+            "quantity"   => $item['quantity'],
+            "total"      => $item['price'] * $item['quantity']
+        ];
+    }
+
+    $product_json = mysqli_real_escape_string($con, json_encode($products));
+
+    /* ===== INSERT ORDER ===== */
+    mysqli_query($con, "
+        INSERT INTO orders 
+        (customer_id, order_date, total_amount, status, payment_method, payment_status, shipping_address, product)
+        VALUES 
+        ('$user_id', '$order_date', '$total', '$status', '$payment_method', '$payment_status', '$address', '$product_json')
+    ");
+
+    /* ===== CLEAR CART ===== */
+    mysqli_query($con, "DELETE FROM carts WHERE user_id='$user_id'");
+
+    echo "<script>
+            alert('Order data saved successfully');
+            window.location='cart.php';
+          </script>";
+    exit;
+}
+
+?>
+
+<?php include "header.php"; ?>
+
 <style>
-body{font-family:Arial;background:#ecf0f1}
-.checkout{width:70%;margin:auto;background:white;padding:30px;border-radius:10px}
-input, select{width:100%;padding:10px;margin-bottom:15px;border-radius:6px;border:1px solid #ccc}
-.place-order{background:#e67e22;color:white;padding:15px;border:none;width:100%;font-size:18px;border-radius:8px}
+    body {
+        background: #f5f6fa;
+        font-family: Arial
+    }
+
+    .checkout-wrapper {
+        width: 90%;
+        margin: 40px auto
+    }
+
+    .card-box {
+        background: #fff;
+        padding: 25px;
+        border-radius: 10px;
+        margin-bottom: 20px
+    }
+
+    .item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px
+    }
+
+    .summary-line {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px
+    }
+
+    .btn-order {
+        width: 100%;
+        padding: 12px;
+        background: #27ae60;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px
+    }
+
+    @media(max-width:768px) {
+        .row {
+            flex-direction: column
+        }
+    }
 </style>
-</head>
-<body>
 
-<div class="checkout">
-<h2>Checkout</h2>
+<div class="checkout-wrapper container cus-p">
+    <div class="row">
 
-<form action="place_order.php" method="POST">
-    <input type="text" name="name" placeholder="Full Name" required>
-    <input type="text" name="phone" placeholder="Phone Number" required>
-    <input type="text" name="address" placeholder="Address" required>
-    <select name="payment_method">
-        <option value="cod">Cash On Delivery</option>
-        <option value="online">Online Payment</option>
-    </select>
-    <button class="place-order">Place Order</button>
-</form>
+        <!-- LEFT COLUMN -->
+        <div class="col-md-6">
+            <div class="card-box">
+                <h3>Checkout Details</h3>
+                <form method="POST">
 
+                    <div class="form-group mb-3">
+                        <label>Full Name</label>
+                        <input type="text" name="name" class="form-control"
+                            value="<?= htmlspecialchars($customer['name'] ?? '') ?>" required>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>Phone Number</label>
+                        <input type="text" name="phone" class="form-control"
+                            value="<?= htmlspecialchars($customer['phone'] ?? '') ?>" required>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>Full Address</label>
+                        <input type="text" name="address" class="form-control"
+                            value="<?= htmlspecialchars($customer['address'] ?? '') ?>" required>
+                    </div>
+
+                    <button type="submit" class="btn-order mt-3">
+                        Place Order
+                    </button>
+
+                </form>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="col-md-6">
+            <div class="card-box">
+                <h3>Order Summary</h3>
+
+                <?php foreach ($cart as $row): ?>
+                    <div class="item">
+                        <div>
+                            <strong><?= htmlspecialchars($row['name']) ?></strong><br>
+                            <small>Qty: <?= $row['quantity'] ?></small>
+                        </div>
+                        <div>
+                            ₹ <?= number_format($row['price'] * $row['quantity'], 2) ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+
+                <hr>
+
+                <div class="summary-line">
+                    <span>Subtotal</span>
+                    <span>₹ <?= number_format($total, 2) ?></span>
+                </div>
+
+                <div class="summary-line">
+                    <span>Shipping</span>
+                    <span>Free</span>
+                </div>
+
+                <hr>
+
+                <div class="summary-line">
+                    <strong>Total</strong>
+                    <strong>₹ <?= number_format($total, 2) ?></strong>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
 </div>
 
-</body>
-</html>
+<?php include "footer.php"; ?>

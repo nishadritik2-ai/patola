@@ -8,14 +8,10 @@ if (!isset($_SESSION['customer_id'])) {
 
 $user_id = $_SESSION['customer_id'];
 
-$query = mysqli_query($con, "
-SELECT c.*, p.name, p.price, p.img
-FROM carts c
-JOIN product p ON c.product_id=p.id
-WHERE c.user_id='$user_id'
-");
-
+$query = mysqli_query($con, "SELECT c.*, p.name, p.price, p.img FROM carts c JOIN product p ON c.product_id=p.id WHERE c.user_id='$user_id'");
+$cartItems = mysqli_fetch_all($query, MYSQLI_ASSOC);
 $total = 0;
+
 ?>
 <?php include "header.php" ?>
 <style>
@@ -26,7 +22,7 @@ $total = 0;
 
     .wrapper {
         width: 90%;
-        margin: 40px auto;
+        margin: 0 auto;
         display: flex;
         gap: 30px;
         flex-wrap: wrap
@@ -87,6 +83,18 @@ $total = 0;
         border-radius: 8px
     }
 
+    .continue-btn {
+        width: 100%;
+        padding: 15px;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+
     @media(max-width:768px) {
         .wrapper {
             flex-direction: column
@@ -94,49 +102,56 @@ $total = 0;
     }
 </style>
 
-<div class="wrapper">
+<div class="wrapper cus-p mb-5">
 
-    <div class="left">
-        <h2>Your Cart</h2>
+    <?php if (count($cartItems) === 0): ?>
+        <div style="text-align:center; margin: 50px auto;">
+            <h2>Your Cart is Empty</h2>
+            <a href="shop.php" class="continue-btn">Continue Shopping</a>
+        </div>
+    <?php else: ?>
+        <div class="left">
+            <h2>Your Cart</h2>
 
-        <?php while ($row = mysqli_fetch_assoc($query)):
-            $total += $row['price'] * $row['quantity'];
-        ?>
+            <?php foreach ($cartItems as $row):
+                $total += $row['price'] * $row['quantity'];
+            ?>
 
-            <div class="item cart-container" data-product="<?= $row['product_id'] ?>">
+                <div class="item cart-container" data-product="<?= $row['product_id'] ?>">
 
-                <img src="<?= $row['img'] ?>">
+                    <img src="admin/<?= $row['img'] ?>">
 
-                <div style="flex:1">
-                    <h4><?= $row['name'] ?></h4>
-                    ₹ <span class="price"><?= $row['price'] ?></span>
+                    <div style="flex:1">
+                        <h4><?= $row['name'] ?></h4>
+                        ₹ <span class="price"><?= $row['price'] ?></span>
+                    </div>
+
+                    <div class="qty-box">
+                        <button class="minus">-</button>
+                        <span class="qty"><?= $row['quantity'] ?></span>
+                        <button class="plus">+</button>
+                    </div>
+
+                    <div class="remove">Remove</div>
+
                 </div>
 
-                <div class="qty-box">
-                    <button class="minus">-</button>
-                    <span class="qty"><?= $row['quantity'] ?></span>
-                    <button class="plus">+</button>
-                </div>
+            <?php endforeach; ?>
 
-                <div class="remove">Remove</div>
+        </div>
 
-            </div>
-
-        <?php endwhile; ?>
-
-    </div>
-
-    <div class="right">
-        <h3>Order Summary</h3>
-        <hr>
-        <p>Subtotal: ₹ <span id="subtotal"><?= $total ?></span></p>
-        <hr>
-        <h4>Total: ₹ <span id="grandTotal"><?= $total ?></span></h4>
-        <br>
-        <a href="checkout.php">
-            <button class="checkout-btn">Proceed to Checkout</button>
-        </a>
-    </div>
+        <div class="right">
+            <h3>Order Summary</h3>
+            <hr>
+            <p>Subtotal: ₹ <span id="subtotal"><?= $total ?></span></p>
+            <hr>
+            <h4>Total: ₹ <span id="grandTotal"><?= $total ?></span></h4>
+            <br>
+            <a href="checkout.php">
+                <button class="checkout-btn">Proceed to Checkout</button>
+            </a>
+        </div>
+    <?php endif; ?>
 
 </div>
 <?php include "footer.php" ?>
