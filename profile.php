@@ -72,182 +72,185 @@ $orderQuery = mysqli_query($con, "
 <?php include "header.php"; ?>
 
 <style>
-.dashboard-card {
-    background: #ffffff;
-    border-radius: 15px;
-    padding: 25px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-}
-.sidebar-avatar {
-    width: 80px;
-    height: 80px;
-    background: #9d671e;
-    border-radius: 50%;
-    color: #fff;
-    font-size: 30px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: auto;
-}
-.order-item {
-    border: 1px solid #eee;
-    border-radius: 12px;
-    padding: 15px;
-    margin-bottom: 15px;
-}
+    .dashboard-card {
+        background: #ffffff;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .sidebar-avatar {
+        width: 80px;
+        height: 80px;
+        background: #9d671e;
+        border-radius: 50%;
+        color: #fff;
+        font-size: 30px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: auto;
+    }
+
+    .order-item {
+        border: 1px solid #eee;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
 </style>
 
 <section class="py-5 cus-p" style="background:#f4f6f9;">
-<div class="container">
+    <div class="container">
 
-<div class="row">
+        <div class="row">
 
-<!-- ================= LEFT SIDEBAR ================= -->
-<div class="col-lg-4 mb-4">
-<div class="dashboard-card text-center">
+            <!-- ================= LEFT SIDEBAR ================= -->
+            <div class="col-lg-4 mb-4">
+                <div class="dashboard-card text-center">
 
-<div class="sidebar-avatar">
-<?= strtoupper(substr($user['name'],0,1)); ?>
-</div>
+                    <div class="sidebar-avatar">
+                        <?= strtoupper(substr($user['name'], 0, 1)); ?>
+                    </div>
 
-<h5 class="mt-3"><?= $user['name']; ?></h5>
-<p class="text-muted"><?= $user['email']; ?></p>
+                    <h5 class="mt-3"><?= $user['name']; ?></h5>
+                    <p class="text-muted"><?= $user['email']; ?></p>
 
-<hr>
+                    <hr>
 
-<p><strong>Phone:</strong> <?= $user['phone']; ?></p>
-<p><strong>Address:</strong> <?= $user['address']; ?></p>
+                    <p><strong>Phone:</strong> <?= $user['phone']; ?></p>
+                    <p><strong>Address:</strong> <?= $user['address']; ?></p>
 
-<a href="logout.php" class="btn btn-danger w-100 mt-3">Logout</a>
+                    <a href="logout.php" class="btn btn-danger w-100 mt-3">Logout</a>
 
-</div>
-</div>
+                </div>
+            </div>
 
-<!-- ================= RIGHT CONTENT ================= -->
-<div class="col-lg-8">
+            <!-- ================= RIGHT CONTENT ================= -->
+            <div class="col-lg-8">
 
-<!-- ===== PROFILE UPDATE FORM ===== -->
-<div class="dashboard-card mb-4">
-<h5 class="mb-4">User Details</h5>
+                <!-- ===== PROFILE UPDATE FORM ===== -->
+                <div class="dashboard-card mb-4">
+                    <h5 class="mb-4">User Details</h5>
 
-<form method="POST">
+                    <form method="POST">
 
-<div class="row">
+                        <div class="row">
 
-<div class="col-md-6 mb-3">
-<label>Full Name</label>
-<input type="text" name="name" class="form-control"
-value="<?= $user['name']; ?>" required>
-</div>
+                            <div class="col-md-6 mb-3">
+                                <label>Full Name</label>
+                                <input type="text" name="name" class="form-control"
+                                    value="<?= $user['name']; ?>" required>
+                            </div>
 
-<div class="col-md-6 mb-3">
-<label>Phone</label>
-<input type="text" name="phone" class="form-control"
-value="<?= $user['phone']; ?>" required>
-</div>
+                            <div class="col-md-6 mb-3">
+                                <label>Phone</label>
+                                <input type="text" name="phone" class="form-control"
+                                    value="<?= $user['phone']; ?>" required>
+                            </div>
 
-<div class="col-md-12 mb-3">
-<label>Address</label>
-<textarea name="address" class="form-control"
-rows="2" required><?= $user['address']; ?></textarea>
-</div>
+                            <div class="col-md-12 mb-3">
+                                <label>Address</label>
+                                <textarea name="address" class="form-control"
+                                    rows="2" required><?= $user['address']; ?></textarea>
+                            </div>
 
-<div class="col-md-6 mb-3">
-<label>Email</label>
-<input type="email" name="email" class="form-control"
-value="<?= $user['email']; ?>" required>
-</div>
+                            <div class="col-md-6 mb-3">
+                                <label>Email</label>
+                                <input type="email" name="email" class="form-control"
+                                    value="<?= $user['email']; ?>" required>
+                            </div>
 
-<div class="col-md-6 mb-3">
-<label>New Password</label>
-<input type="password" name="new_password"
-class="form-control"
-placeholder="Leave blank to keep same">
-</div>
+                            <div class="col-md-6 mb-3">
+                                <label>New Password</label>
+                                <input type="password" name="new_password"
+                                    class="form-control"
+                                    placeholder="Leave blank to keep same">
+                            </div>
 
-</div>
+                        </div>
 
-<button type="submit" name="update_profile"
-class="btn btn-primary w-100">
-Update Profile
-</button>
+                        <button type="submit" name="update_profile"
+                            class="btn btn-primary w-100">
+                            Update Profile
+                        </button>
 
-</form>
-</div>
+                    </form>
+                </div>
 
-</div>
-</div>
+            </div>
+        </div>
 
-<!-- ================= ORDERS SECTION ================= -->
-<div class="row mt-4">
-<div class="col-lg-12">
-<div class="dashboard-card">
+        <!-- ================= ORDERS SECTION ================= -->
+        <div class="row mt-4">
+            <div class="col-lg-12">
+                <div class="dashboard-card">
 
-<h5 class="mb-4">My Orders</h5>
+                    <h5 class="mb-4">My Orders</h5>
 
-<?php if (mysqli_num_rows($orderQuery) > 0) { ?>
+                    <?php if (mysqli_num_rows($orderQuery) > 0) { ?>
 
-<?php while ($order = mysqli_fetch_assoc($orderQuery)) { ?>
+                        <?php while ($order = mysqli_fetch_assoc($orderQuery)) { ?>
 
-<div class="order-item">
+                            <div class="order-item">
 
-<div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex justify-content-between align-items-center">
 
-<div>
-<strong>Order #<?= $order['id']; ?></strong>
-<p class="mb-1"><?= date("d M Y", strtotime($order['created_at'])); ?></p>
+                                    <div>
+                                        <strong>Order #<?= $order['id']; ?></strong>
+                                        <p class="mb-1"><?= date("d M Y", strtotime($order['created_at'])); ?></p>
 
-<?php
-/* ===== DECODE PRODUCT JSON ===== */
-$products = json_decode($order['product'], true);
+                                        <?php
+                                        /* ===== DECODE PRODUCT JSON ===== */
+                                        $products = json_decode($order['product'], true);
 
-if (!empty($products)) {
-foreach ($products as $item) {
-?>
+                                        if (!empty($products)) {
+                                            foreach ($products as $item) {
+                                        ?>
 
-<div class="mb-1">
-<small>
-<?= $item['name']; ?> 
-×<?= $item['quantity']; ?>
-(₹<?= $item['price']; ?>)
-</small>
-</div>
+                                                <div class="mb-1">
+                                                    <small>
+                                                        <?= $item['name']; ?>
+                                                        ×<?= $item['quantity']; ?>
+                                                        (₹<?= $item['price']; ?>)
+                                                    </small>
+                                                </div>
 
-<?php
-}
-}
-?>
+                                        <?php
+                                            }
+                                        }
+                                        ?>
 
-<small>Payment: <?= $order['payment_method']; ?></small>
-</div>
+                                        <small>SIZE : <?= $order['requirement']; ?></small><br>
+                                        <small>Payment: <?= $order['payment_method']; ?></small>
+                                    </div>
 
-<div class="text-end">
-<span class="badge bg-success">
-<?= $order['status']; ?>
-</span>
-<h6 class="mt-2">₹<?= $order['total_amount']; ?></h6>
-</div>
+                                    <div class="text-end">
+                                        <span class="badge bg-success">
+                                            <?= $order['status']; ?>
+                                        </span>
+                                        <h6 class="mt-2">₹<?= $order['total_amount']; ?></h6>
+                                    </div>
 
-</div>
-</div>
+                                </div>
+                            </div>
 
-<?php } ?>
+                        <?php } ?>
 
-<?php } else { ?>
+                    <?php } else { ?>
 
-<div class="alert alert-info">
-You have not placed any orders yet.
-</div>
+                        <div class="alert alert-info">
+                            You have not placed any orders yet.
+                        </div>
 
-<?php } ?>
+                    <?php } ?>
 
-</div>
-</div>
-</div>
+                </div>
+            </div>
+        </div>
 
-</div>
+    </div>
 </section>
 
 <?php include "footer.php"; ?>
