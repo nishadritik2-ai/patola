@@ -10,9 +10,9 @@ ini_set('display_errors', 1);
 
 <head>
     <base href="http://localhost/patola/">
+    <title></title>
     <meta name="description" content="">
     <meta name="keywords" content="">
-    <title></title>
     <link rel="canonical" href="">
 
 
@@ -130,7 +130,7 @@ ini_set('display_errors', 1);
                     <!-- <a class="text-muted small me-4"><i class="fas fa-map-marker-alt text-primary me-2"></i>Luanda, Angola</a>
                     <a href="tel:+01234567890" class="text-muted small me-4"><i class="fas fa-phone-alt text-primary me-2"></i>+01234567890</a>
                     <a href="mailto:example@gmail.com" class="text-muted small me-0"><i class="fas fa-envelope text-primary me-2"></i>Example@gmail.com</a> -->
-                    <p style="color: #fff;">Welcome To Patola Fashion Boutique</p>
+                    <p class="m-0" style="color: #fff;">Welcome To Patola Fashion Boutique</p>
                 </div>
             </div>
             <div class="col-lg-4 text-center text-lg-start mb-2 mb-lg-0">
@@ -210,6 +210,46 @@ ini_set('display_errors', 1);
                     <a href="shop.php" class="nav-item nav-link">Products</a>
                     <a href="contact.php" class="nav-item nav-link">Contact Us</a>
                 </div>
-                <!-- <a href="login.php" class="btn btn-primary rounded-pill py-2 px-4 my-3 my-lg-0 flex-shrink-0">Login</a> -->
+
+                <div class="mobile-data d-lg-none ">
+
+                    <!-- MOBILE USER AREA -->
+                    <div class="mobile-user-area d-flex align-items-center gap-3 mt-3">
+                        <?php if (isset($_SESSION['customer_id'])) { ?>
+
+                            <!-- USER AVATAR & NAME -->
+                            <div class="dropdown">
+                                <button class="btn btn-sm btn-outline-light dropdown-toggle d-flex align-items-center gap-2"
+                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
+
+                                    <span class="text-white fw-semibold"><?= htmlspecialchars($_SESSION['customer_name']) ?></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end shadow-sm">
+                                    <li><a class="dropdown-item" href="profile.php"><i class="fa fa-user fa-fw me-2"></i>Profile</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item text-danger" href="logout.php"><i class="fa fa-sign-out-alt fa-fw me-2"></i>Logout</a></li>
+                                </ul>
+                            </div>
+
+                        <?php } else { ?>
+
+                            <!-- LOGIN & REGISTER BUTTONS -->
+                            <a href="login.php" class="btn btn-sm btn-outline-light flex-fill">Login</a>
+                            <a href="register.php" class="btn btn-sm btn-primary flex-fill">Register</a>
+
+                        <?php } ?>
+
+                        <!-- CART ICON -->
+                        <a href="cart.php" class="cart-icon-mobile position-relative">
+                            <i class="fas fa-shopping-bag fa-lg text-white"></i>
+                            <?php if ($cartCount > 0) { ?>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                    style="font-size: 0.65rem;"><?= $cartCount ?></span>
+                            <?php } ?>
+                        </a>
+                    </div>
+                </div>
             </div>
         </nav>

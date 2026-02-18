@@ -1,3 +1,12 @@
+<?php
+session_start();
+
+if(!isset($_SESSION['user'])){
+    header("Location: login.php");
+    exit();
+}
+?>
+
 <?php include 'header.php' ?>
 <?php
 
@@ -21,7 +30,7 @@ if (isset($_POST['submit'])) {
 
     <script>
         alert('category Added. Thank you<?php " . $name . " ?>');
-        document.location.href = "index.php"
+        document.location.href = "all-product.php"
     </script>
 <?php
 }

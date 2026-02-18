@@ -9,7 +9,7 @@ if (isset($_POST['submit'])) {
     $address  = mysqli_real_escape_string($con, $_POST['address']);
     $email    = mysqli_real_escape_string($con, $_POST['email']);
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $status = 0;
+    $status = 1;
 
     // Check Empty Fields
     if (empty($name) || empty($phone) || empty($address) || empty($email) || empty($_POST['password'])) {

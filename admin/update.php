@@ -1,4 +1,13 @@
 <?php
+session_start();
+
+if(!isset($_SESSION['user'])){
+    header("Location: login.php");
+    exit();
+}
+?>
+
+<?php
 include "connection.php";
 
 $id = intval($_GET['id']);
@@ -58,7 +67,7 @@ if (isset($_POST['submit'])) {
     if ($update) {
         echo "<script>
                 alert('Product Updated Successfully');
-                window.location.href='index.php';
+                window.location.href='all-product.php';
               </script>";
         exit();
     } else {

@@ -11,7 +11,40 @@ $sql = "SELECT * FROM product WHERE slug = '$page_flname'"; // Query to fetch pr
 $result = $conn->query($sql);
 while ($row = mysqli_fetch_assoc($result)) {
 ?>
+    <style>
+        #imageSlider {
+            max-width: 430px;
+            height: 400px;
+            margin: auto;
+        }
 
+        /* Make inner & items full height */
+        #imageSlider .carousel-inner,
+        #imageSlider .carousel-item {
+            height: 100%;
+        }
+
+        /* Image fit without zoom */
+        #imageSlider .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Fix controls (no stretch) */
+        #imageSlider .carousel-control-prev,
+        #imageSlider .carousel-control-next {
+            width: 50px;
+            height: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* Fix indicators position */
+        #imageSlider .carousel-indicators {
+            bottom: 10px;
+        }
+    </style>
     <!-- Header Start -->
     <div class="container-fluid bg-breadcrumb" style="background-image:url(admin/<?php echo $row['img'] ?>)">
         <div class="container text-center py-5" style="max-width: 900px;">
@@ -32,7 +65,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     <div class="container-fluid about py-5">
         <div class="container py-5">
             <div class="row g-5 align-items-center">
-                <div class="col-xl-6 wow fadeInLeft" data-wow-delay="0.2s">
+                <div class="col-lg-6 col-md-6 wow fadeInLeft" data-wow-delay="0.2s">
                     <div>
                         <!-- <h4 style="color:#000"><?php echo $company ?></h4> -->
                         <h1 class="display-5 mb-4"><?php echo $row['name'] ?></h1>
@@ -64,30 +97,48 @@ while ($row = mysqli_fetch_assoc($result)) {
 
                     </div>
                 </div>
-                <div class="col-xl-6 wow fadeInRight" data-wow-delay="0.1s">
-                    <div id="productSlider" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                            <div class="carousel-item active">
-                                <div class="bg-primary rounded position-relative overflow-hidden">
-                                    <img src="admin/<?php echo $row['img'] ?>" class="img-fluid rounded w-100" alt="">
-                                </div>
-                            </div>
-                            <div class="carousel-item">
-                                <div class="bg-primary rounded position-relative overflow-hidden">
-                                    <img src="img/pro-size.jpeg" class="img-fluid rounded w-100" alt="">
-                                </div>
-                            </div>
+                <div class="col-lg-6 col-md-6 wow fadeInRight" data-wow-delay="0.2s" style="justify-items: center;">
+
+                    <div id="imageSlider"
+                        class="carousel slide rounded position-relative overflow-hidden"
+                        data-bs-ride="carousel">
+
+                        <!-- Indicators -->
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="0" class="active"></button>
+                            <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="1"></button>
                         </div>
-                        <!-- Optional controls -->
-                        <button class="carousel-control-prev" type="button" data-bs-target="#productSlider" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
+
+                        <!-- Slider Images -->
+                        <div class="carousel-inner">
+
+                            <div class="carousel-item active">
+                                <img src="admin/<?php echo $row['img']; ?>" alt="">
+                            </div>
+
+                            <div class="carousel-item">
+                                <img src="img/pro-size.jpeg" alt="">
+                            </div>
+
+                        </div>
+
+                        <!-- Controls -->
+                        <button class="carousel-control-prev"
+                            type="button"
+                            data-bs-target="#imageSlider"
+                            data-bs-slide="prev" style="background-color: black;">
+                            <span class="carousel-control-prev-icon"></span>
                         </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#productSlider" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
+
+                        <button class="carousel-control-next"
+                            type="button"
+                            data-bs-target="#imageSlider"
+                            data-bs-slide="next" style="background-color: black;">
+                            <span class="carousel-control-next-icon"></span>
                         </button>
+
                     </div>
+
                 </div>
             </div>
         </div>
