@@ -68,154 +68,55 @@ if (isset($_POST['submit'])) {
 
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
+<?php include 'header.php' ?>
+<?php
+$sql = "SELECT * FROM product Where id=$id";
+$result = mysqli_query($con, $sql);
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Patola</title>
+while ($row = mysqli_fetch_assoc($result)) { ?>
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+        <div class="container">
+            <h2>Update Product</h2>
+            <form method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="exampleInputName" class="form-label">Name</label>
+                    <input name="name" type="text" value="<?php echo $row['name'] ?> " class="form-control" id="exampleInputname">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Price</label>
+                    <input name="price"
+                        type="number"
+                        step="0.01"
+                        class="form-control"
+                        value="<?php echo $row['price']; ?>"
+                        required>
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputStock" class="form-label">Stock</label>
+                    <input name="stock" value="<?php echo $row['stock'] ?>" type="number" placeholder="Enter Stock Quantity" class="form-control" id="exampleInputStock">
+                </div>
 
-    <style>
-        .cke_notification_warning {
-            display: none;
-        }
-    </style>
-
-    <style>
-        section {
-            padding: 50px 0;
-            background-color: #f8f9fa;
-        }
-
-        .container {
-            max-width: 700px;
-        }
-
-        form {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-        }
-
-        .form-label {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 6px;
-        }
-
-        .form-control {
-            border-radius: 6px;
-            padding: 10px 12px;
-            border: 1px solid #ced4da;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-
-        .form-control:focus {
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
-        }
-
-        input[type="file"] {
-            padding: 6px;
-        }
-
-        img {
-            display: block;
-            margin: 10px 0 20px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-        }
-
-        textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        button.btn-primary {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 8px;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-
-        button.btn-primary:hover {
-            background-color: #0b5ed7;
-            transform: translateY(-1px);
-        }
-
-        .mb-3 {
-            margin-bottom: 20px;
-        }
-    </style>
-
-
-    <script src="https://cdn.ckeditor.com/4.18.0/standard/ckeditor.js"></script>
-
-</head>
-
-<body>
-    <?php
-    $sql = "SELECT * FROM product Where id=$id";
-    $result = mysqli_query($con, $sql);
-
-    while ($row = mysqli_fetch_assoc($result)) { ?>
-        <?php include 'header.php' ?>
-        <section>
-            <div class="container">
-                <form method="post" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="exampleInputName" class="form-label">Name</label>
-                        <input name="name" type="text" value="<?php echo $row['name'] ?> " class="form-control" id="exampleInputname">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Price</label>
-                        <input name="price"
-                            type="number"
-                            step="0.01"
-                            class="form-control"
-                            value="<?php echo $row['price']; ?>"
-                            required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleInputStock" class="form-label">Stock</label>
-                        <input name="stock" value="<?php echo $row['stock'] ?>" type="number" placeholder="Enter Stock Quantity" class="form-control" id="exampleInputStock">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="exampleInputage" class="form-label">Slug</label>
-                        <input name="slug" type="text" value="<?php echo $row['slug'] ?> " class="form-control" id="exampleInputage">
-                    </div>
-                    <div>
-                        <label for="exampleInputage" class="form-label">image</label>
-                        <input type="file" name="image">
-                    </div>
-                    <img src="<?php echo $row['img'] ?>" height="100">
-                    <div class="mb-3">
-                        <label for="exampleInputpost" class="form-label">Description</label>
-                        <textarea id="editor" name="des"><?php echo $row['des'] ?></textarea>
-                    </div>
-                    <button name="submit" type="submit" class="btn btn-primary">Submit</button>
-                    <!-- <button type="submit" name="submit">Submit</button> -->
-                </form>
-            </div>
-        </section>
-
-        <script>
-            CKEDITOR.replace('editor');
-            // CKEDITOR.replace('editor1');
-        </script>
-    <?php
-    }
-    ?>
-
-    <?php include 'footer.php' ?>
-</body>
-
-</html>
-
+                <div class="mb-3">
+                    <label for="exampleInputage" class="form-label">Slug</label>
+                    <input name="slug" type="text" value="<?php echo $row['slug'] ?> " class="form-control" id="exampleInputage">
+                </div>
+                <div>
+                    <label for="exampleInputage" class="form-label">image</label>
+                    <input type="file" name="image">
+                </div>
+                <img src="<?php echo $row['img'] ?>" height="100">
+                <div class="mb-3">
+                    <label for="exampleInputpost" class="form-label">Description</label>
+                    <textarea id="editor" name="des"><?php echo $row['des'] ?></textarea>
+                </div>
+                <button name="submit" type="submit" class="btn btn-primary">Submit</button>
+                <!-- <button type="submit" name="submit">Submit</button> -->
+            </form>
+        </div>
+    </main>
 
 <?php
+}
+?>
+
+<?php include 'footer.php' ?>

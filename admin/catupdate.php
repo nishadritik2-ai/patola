@@ -1,4 +1,5 @@
-<?php 
+<?php include 'header.php' ?>
+<?php
 include "connection.php";
 
 $id = intval($_GET['id']);
@@ -33,7 +34,6 @@ if (isset($_POST['submit'])) {
                     slug='$slug',
                     img='$fileurl'
                 WHERE id=$id";
-
     } else {
 
         $sql = "UPDATE category 
@@ -56,76 +56,37 @@ if (isset($_POST['submit'])) {
 }
 ?>
 
-?>
-<!DOCTYPE html>
-<html lang="en">
+<?php
+$sql = "SELECT * FROM category Where id=$id";
+$result = mysqli_query($con, $sql);
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Form</title>
-
-    <style>
-        .cke_notification_warning {
-            display: none;
-        }
-    </style>
-    <script src="https://cdn.ckeditor.com/4.18.0/standard/ckeditor.js"></script>
-
-</head>
-
-<body>
-    <?php
-    $sql = "SELECT * FROM category Where id=$id";
-    $result = mysqli_query($con, $sql);
-
-    while ($row = mysqli_fetch_assoc($result)) { ?>
-        <?php include 'header.php' ?>
-        <section style="margin: 50px;">
-            <div class="container">
-                <form method="post" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="exampleInputName" class="form-label"> category Name</label>
-                        <input name="name" value="<?php echo $row['name'] ?>" type="text" placeholder="Enter categroy Name" class="form-control" id="exampleInputname">
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleInputName" class="form-label">category Slug</label>
-                        <input name="slug" value="<?php echo $row['slug'] ?>" type="text" placeholder="Enter category Slug name" class="form-control" id="exampleInputname">
-                    </div>
-                    <div class="mb-3">
-                        <label for="exampleInputName" class="form-label">Image</label> <br>
-                        <input type="file" name="image">
-                    </div>
+while ($row = mysqli_fetch_assoc($result)) { ?>
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+        <div class="container">
+            <h2>Update category</h2>
+            <form method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="exampleInputName" class="form-label"> category Name</label>
+                    <input name="name" value="<?php echo $row['name'] ?>" type="text" placeholder="Enter categroy Name" class="form-control" id="exampleInputname">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputName" class="form-label">category Slug</label>
+                    <input name="slug" value="<?php echo $row['slug'] ?>" type="text" placeholder="Enter category Slug name" class="form-control" id="exampleInputname">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputName" class="form-label">Image</label> <br>
+                    <input type="file" name="image">
                     <img src="<?php echo $row['img'] ?>" height="100">
-                    <button name="submit" type="submit" class="btn btn-primary">Submit</button>
-                </form>
-            </div>
-        </section>
-
-        <script>
-            CKEDITOR.replace("editor", {
-                // height: "100vh",
-                // width: "100vw"
-            });
-
-            CKEDITOR.on("instanceReady", function(evt) {
-                var instanceName = "editor";
-                var editor = CKEDITOR.instances[instanceName];
-                // editor.execCommand("maximize");
-            });
-
-            $(document).ready(function() {
-                $("#page_effect").fadeIn(8000);
-            });
-        </script>
-    <?php
-    }
-    ?>
-
-    <?php include 'footer.php' ?>
-</body>
-
-</html>
+                </div>
+                
+                <button name="submit" type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </main>
 
 
 <?php
+}
+?>
+
+<?php include 'footer.php' ?>

@@ -36,7 +36,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                     <div>
                         <!-- <h4 style="color:#000"><?php echo $company ?></h4> -->
                         <h1 class="display-5 mb-4"><?php echo $row['name'] ?></h1>
-                        <h2 class="display-5 mb-4"><?php echo $row['price'] ?></h2>
+                        <h3 class="mb-4" style="color:#97621e"><i class="fas fa-rupee-sign"></i> <?php echo $row['price'] ?></h3>
                         <?php echo $row['des'] ?><br>
                         <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                             Buy Now
@@ -64,11 +64,29 @@ while ($row = mysqli_fetch_assoc($result)) {
 
                     </div>
                 </div>
-                <div class="col-xl-6 wow fadeInRight" data-wow-delay="0.2s">
-                    <div class="bg-primary rounded position-relative overflow-hidden">
-                        <img src="admin/<?php echo $row['img'] ?>" class="img-fluid rounded w-100" alt="">
-
-
+                <div class="col-xl-6 wow fadeInRight" data-wow-delay="0.1s">
+                    <div id="productSlider" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <div class="bg-primary rounded position-relative overflow-hidden">
+                                    <img src="admin/<?php echo $row['img'] ?>" class="img-fluid rounded w-100" alt="">
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="bg-primary rounded position-relative overflow-hidden">
+                                    <img src="img/pro-size.jpeg" class="img-fluid rounded w-100" alt="">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Optional controls -->
+                        <button class="carousel-control-prev" type="button" data-bs-target="#productSlider" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#productSlider" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
                     </div>
                 </div>
             </div>
