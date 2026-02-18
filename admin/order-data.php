@@ -9,176 +9,141 @@ $orderQuery = mysqli_query($con, "
 ");
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Admin - Orders</title>
+<?php include 'header.php'; ?>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+    <div class="container py-5">
 
-<style>
-body{background:#f4f6f9;font-family:Arial}
-.page-title{font-weight:600}
-.order-card{
-    border-radius:15px;
-    box-shadow:0 5px 20px rgba(0,0,0,0.08);
-    margin-bottom:20px;
-}
-.badge-status{
-    padding:6px 12px;
-    border-radius:50px;
-    font-size:12px;
-}
-.badge-pending{background:#fff3cd;color:#856404}
-.badge-completed{background:#d1e7dd;color:#0f5132}
-.badge-cancelled{background:#f8d7da;color:#842029}
-.product-box{
-    border:1px solid #eee;
-    border-radius:10px;
-    padding:10px;
-    margin-bottom:10px;
-}
-</style>
+        <h2 class="text-center mb-4 page-title">All Orders</h2>
 
-</head>
+        <?php if (mysqli_num_rows($orderQuery) > 0) { ?>
 
-<body>
+            <div class="accordion" id="orderAccordion">
 
-<div class="container py-5">
+                <?php
+                $index = 0;
+                while ($order = mysqli_fetch_assoc($orderQuery)):
 
-<h2 class="text-center mb-4 page-title">All Orders</h2>
+                    $index++;
+                    $statusClass = "badge-pending";
+                    if ($order['status'] == "Completed") $statusClass = "badge-completed";
+                    if ($order['status'] == "Cancelled") $statusClass = "badge-cancelled";
+                ?>
 
-<?php if(mysqli_num_rows($orderQuery) > 0){ ?>
+                    <div class="accordion-item order-card">
 
-<div class="accordion" id="orderAccordion">
+                        <h2 class="accordion-header" id="heading<?= $index ?>">
+                            <button class="accordion-button collapsed" type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapse<?= $index ?>"
+                                aria-expanded="false">
 
-<?php 
-$index = 0;
-while($order = mysqli_fetch_assoc($orderQuery)):
+                                <div class="w-100 d-flex justify-content-between align-items-center">
 
-$index++;
-$statusClass = "badge-pending";
-if($order['status'] == "Completed") $statusClass = "badge-completed";
-if($order['status'] == "Cancelled") $statusClass = "badge-cancelled";
-?>
+                                    <div>
+                                        <strong>Order #<?= $order['id'] ?></strong>
+                                        <span class="ms-3 text-muted">
+                                            <?= date("d M Y", strtotime($order['created_at'])) ?>
+                                        </span>
+                                    </div>
 
-<div class="accordion-item order-card">
+                                    <div class="text-end">
+                                        <span class="badge badge-status <?= $statusClass ?>">
+                                            <?= $order['status'] ?>
+                                        </span>
 
-<h2 class="accordion-header" id="heading<?= $index ?>">
-<button class="accordion-button collapsed" type="button" 
-data-bs-toggle="collapse" 
-data-bs-target="#collapse<?= $index ?>" 
-aria-expanded="false">
+                                        <span class="ms-3 fw-bold">
+                                            ₹<?= number_format($order['total_amount'], 2) ?>
+                                        </span>
+                                    </div>
 
-<div class="w-100 d-flex justify-content-between align-items-center">
+                                </div>
 
-<div>
-<strong>Order #<?= $order['id'] ?></strong>
-<span class="ms-3 text-muted">
-<?= date("d M Y", strtotime($order['created_at'])) ?>
-</span>
-</div>
+                            </button>
+                        </h2>
 
-<div class="text-end">
-<span class="badge badge-status <?= $statusClass ?>">
-<?= $order['status'] ?>
-</span>
+                        <div id="collapse<?= $index ?>"
+                            class="accordion-collapse collapse"
+                            data-bs-parent="#orderAccordion">
 
-<span class="ms-3 fw-bold">
-₹<?= number_format($order['total_amount'],2) ?>
-</span>
-</div>
+                            <div class="accordion-body">
 
-</div>
+                                <!-- ORDER META INFO -->
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <p><strong>Customer ID:</strong> <?= $order['customer_id'] ?></p>
+                                        <p><strong>Payment Method:</strong> <?= $order['payment_method'] ?></p>
+                                        <p><strong>Payment Status:</strong> <?= $order['payment_status'] ?></p>
+                                    </div>
 
-</button>
-</h2>
+                                    <div class="col-md-6">
+                                        <p><strong>Shipping Address:</strong></p>
+                                        <p><?= nl2br(htmlspecialchars($order['shipping_address'])) ?></p>
+                                    </div>
+                                </div>
 
-<div id="collapse<?= $index ?>" 
-class="accordion-collapse collapse" 
-data-bs-parent="#orderAccordion">
+                                <hr>
 
-<div class="accordion-body">
+                                <!-- PRODUCT LIST -->
+                                <h6 class="mb-3">Products</h6>
 
-<!-- ORDER META INFO -->
-<div class="row mb-3">
-<div class="col-md-6">
-<p><strong>Customer ID:</strong> <?= $order['customer_id'] ?></p>
-<p><strong>Payment Method:</strong> <?= $order['payment_method'] ?></p>
-<p><strong>Payment Status:</strong> <?= $order['payment_status'] ?></p>
-</div>
+                                <?php
+                                $products = json_decode($order['product'], true);
 
-<div class="col-md-6">
-<p><strong>Shipping Address:</strong></p>
-<p><?= nl2br(htmlspecialchars($order['shipping_address'])) ?></p>
-</div>
-</div>
+                                if (!empty($products)):
+                                    foreach ($products as $item):
+                                ?>
 
-<hr>
+                                        <div class="product-box d-flex justify-content-between align-items-center">
 
-<!-- PRODUCT LIST -->
-<h6 class="mb-3">Products</h6>
+                                            <div>
+                                                <strong><?= htmlspecialchars($item['name']) ?></strong><br>
+                                                <small>
+                                                    Qty: <?= $item['quantity'] ?> |
+                                                    Price: ₹<?= $item['price'] ?>
+                                                </small>
+                                            </div>
 
-<?php
-$products = json_decode($order['product'], true);
+                                            <div>
+                                                <strong>₹<?= number_format($item['total'], 2) ?></strong>
+                                            </div>
 
-if(!empty($products)):
-foreach($products as $item):
-?>
+                                        </div>
 
-<div class="product-box d-flex justify-content-between align-items-center">
+                                    <?php
+                                    endforeach;
+                                else:
+                                    ?>
 
-<div>
-<strong><?= htmlspecialchars($item['name']) ?></strong><br>
-<small>
-Qty: <?= $item['quantity'] ?> |
-Price: ₹<?= $item['price'] ?>
-</small>
-</div>
+                                    <p class="text-muted">No product data available</p>
 
-<div>
-<strong>₹<?= number_format($item['total'],2) ?></strong>
-</div>
+                                <?php endif; ?>
 
-</div>
+                                <hr>
 
-<?php 
-endforeach;
-else:
-?>
+                                <!-- TOTAL SECTION -->
+                                <div class="d-flex justify-content-between">
+                                    <h5>Total Amount</h5>
+                                    <h5>₹<?= number_format($order['total_amount'], 2) ?></h5>
+                                </div>
 
-<p class="text-muted">No product data available</p>
+                            </div>
+                        </div>
+                    </div>
 
-<?php endif; ?>
+                <?php endwhile; ?>
 
-<hr>
+            </div>
 
-<!-- TOTAL SECTION -->
-<div class="d-flex justify-content-between">
-<h5>Total Amount</h5>
-<h5>₹<?= number_format($order['total_amount'],2) ?></h5>
-</div>
+        <?php } else { ?>
 
-</div>
-</div>
-</div>
+            <div class="alert alert-info text-center">
+                No orders found.
+            </div>
 
-<?php endwhile; ?>
+        <?php } ?>
 
-</div>
+    </div>
+</main>
 
-<?php } else { ?>
-
-<div class="alert alert-info text-center">
-No orders found.
-</div>
-
-<?php } ?>
-
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-</html>
+<?php include 'footer.php'; ?>
