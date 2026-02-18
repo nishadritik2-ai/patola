@@ -110,35 +110,38 @@ $total = 0;
             <a href="shop.php" class="continue-btn">Continue Shopping</a>
         </div>
     <?php else: ?>
-        <div class="left">
+        <div class="left p-0 mt-2">
             <h2>Your Cart</h2>
 
             <?php foreach ($cartItems as $row):
                 $total += $row['price'] * $row['quantity'];
             ?>
 
-                <div class="item cart-container" data-product="<?= $row['product_id'] ?>">
+                <div class="item cart-container " data-product="<?= $row['product_id'] ?>">
 
                     <img src="admin/<?= $row['img'] ?>">
 
                     <div style="flex:1">
-                        <h4><?= $row['name'] ?></h4>
+                        <h6><?= $row['name'] ?></h6>
                         ₹ <span class="price"><?= $row['price'] ?></span>
                     </div>
 
-                    <div class="qty-box">
-                        <button class="minus">-</button>
-                        <span class="qty"><?= $row['quantity'] ?></span>
-                        <button class="plus">+</button>
-                    </div>
+                    <div>
+                        <div class="qty-box">
+                            <button class="minus">-</button>
+                            <span class="qty"><?= $row['quantity'] ?></span>
+                            <button class="plus">+</button>
+                        </div>
 
-                    <div class="remove">Remove</div>
+                        <div class="remove p-2 text-white mt-3 bg-danger">Remove</div>
+                    </div>
 
                 </div>
 
             <?php endforeach; ?>
 
         </div>
+
 
         <div class="right">
             <h3>Order Summary</h3>
@@ -154,4 +157,5 @@ $total = 0;
     <?php endif; ?>
 
 </div>
+
 <?php include "footer.php" ?>

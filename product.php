@@ -65,7 +65,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     <div class="container-fluid about py-5">
         <div class="container py-5">
             <div class="row g-5 align-items-center">
-                <div class="col-xl-6 wow fadeInLeft" data-wow-delay="0.2s">
+                <div class="col-lg-6 col-md-6 wow fadeInLeft" data-wow-delay="0.2s">
                     <div>
                         <!-- <h4 style="color:#000"><?php echo $company ?></h4> -->
                         <h1 class="display-5 mb-4"><?php echo $row['name'] ?></h1>
@@ -97,7 +97,7 @@ while ($row = mysqli_fetch_assoc($result)) {
 
                     </div>
                 </div>
-                <div class="col-xl-6 wow fadeInRight" data-wow-delay="0.2s" style="justify-items: center;">
+                <div class="col-lg-6 col-md-6 wow fadeInRight" data-wow-delay="0.2s" style="justify-items: center;">
 
                     <div id="imageSlider"
                         class="carousel slide rounded position-relative overflow-hidden"
