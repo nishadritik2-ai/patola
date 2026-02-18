@@ -1,4 +1,13 @@
 <?php
+session_start();
+
+if(!isset($_SESSION['user'])){
+    header("Location: login.php");
+    exit();
+}
+?>
+
+<?php
 require_once 'connection.php';
 
 
@@ -10,7 +19,118 @@ $orderQuery = mysqli_query($con, "
 ?>
 
 <?php include 'header.php'; ?>
+<style>
+    /* Page Title */
+    .page-title {
+        font-weight: 700;
+        font-size: 28px;
+        background: linear-gradient(135deg, #6a11cb, #2575fc);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
 
+    /* Accordion Card */
+    .order-card {
+        border: none;
+        border-radius: 14px;
+        overflow: hidden;
+        margin-bottom: 18px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+    }
+
+    .order-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Accordion Header Button */
+    .accordion-button {
+        background: #ffffff;
+        font-weight: 500;
+        border: none;
+        box-shadow: none !important;
+        padding: 18px 22px;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background: linear-gradient(135deg, #f8f9ff, #eef2ff);
+        color: #333;
+    }
+
+    /* Remove default arrow color */
+    .accordion-button::after {
+        filter: brightness(0.5);
+    }
+
+    /* Status Badge Base */
+    .badge-status {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #fff;
+    }
+
+    /* Status Colors */
+    .badge-pending {
+        background: linear-gradient(135deg, #ff9800, #ffc107);
+    }
+
+    .badge-completed {
+        background: linear-gradient(135deg, #28a745, #20c997);
+    }
+
+    .badge-cancelled {
+        background: linear-gradient(135deg, #dc3545, #ff6b6b);
+    }
+
+    /* Accordion Body */
+    .accordion-body {
+        background: #fafbff;
+        padding: 25px;
+        border-top: 1px solid #eee;
+    }
+
+    /* Product Box */
+    .product-box {
+        background: #ffffff;
+        padding: 14px 18px;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+        transition: 0.3s;
+    }
+
+    .product-box:hover {
+        background: #f1f5ff;
+        transform: scale(1.01);
+    }
+
+    /* HR Style */
+    hr {
+        opacity: 0.1;
+    }
+
+    /* Total Section */
+    .accordion-body h5 {
+        font-weight: 700;
+    }
+
+    /* Payment & Meta Text */
+    .accordion-body p {
+        margin-bottom: 6px;
+        font-size: 14px;
+        color: #555;
+    }
+
+    /* Alert Styling */
+    .alert-info {
+        border-radius: 12px;
+        padding: 18px;
+        font-weight: 500;
+    }
+</style>
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
     <div class="container py-5">
 

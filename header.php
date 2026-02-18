@@ -10,9 +10,9 @@ ini_set('display_errors', 1);
 
 <head>
     <base href="http://localhost/patola/">
+    <title></title>
     <meta name="description" content="">
     <meta name="keywords" content="">
-    <title></title>
     <link rel="canonical" href="">
 
 
@@ -213,3 +213,4 @@ ini_set('display_errors', 1);
                 <!-- <a href="login.php" class="btn btn-primary rounded-pill py-2 px-4 my-3 my-lg-0 flex-shrink-0">Login</a> -->
             </div>
         </nav>
+    </div>

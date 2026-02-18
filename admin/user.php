@@ -1,5 +1,13 @@
-
 <?php
+session_start();
+
+if(!isset($_SESSION['user'])){
+    header("Location: login.php");
+    exit();
+}
+?>
+
+<?php include "connection.php";
 
 if (isset($_POST['submit'])) {
     $name = $_POST['name'];
@@ -22,7 +30,7 @@ if (isset($_POST['submit'])) {
     } else echo "."; ?>
     <script>
         alert('product Added. Thank you<?php " . $name . " ?>');
-        document.location.href = "index.php"
+        document.location.href = "all-product.php"
     </script>
 <?php
 }

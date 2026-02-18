@@ -1,3 +1,12 @@
+<?php
+session_start();
+
+if(!isset($_SESSION['user'])){
+    header("Location: login.php");
+    exit();
+}
+?>
+
 <?php include 'header.php' ?>
 <?php
 include "connection.php";
@@ -47,7 +56,7 @@ if (isset($_POST['submit'])) {
     if ($update) {
         echo "<script>
                 alert('Category Updated Successfully');
-                window.location.href='index.php';
+                window.location.href='all-product.php';
               </script>";
         exit();
     } else {

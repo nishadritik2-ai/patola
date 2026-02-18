@@ -1,8 +1,26 @@
+<?php
+session_start();
+
+if(!isset($_SESSION['user'])){
+    header("Location: login.php");
+    exit();
+}
+?>
+
 <?php include 'header.php'; ?>
 
 <!-- Main content -->
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-    <h2 class="mb-4">Dashboard Overview</h2>
+
+    <!-- Top Header with Logout -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Dashboard Overview</h2>
+
+        <a href="logout.php" class="btn btn-danger">
+            <i class="bi bi-box-arrow-right"></i> Logout
+        </a>
+    </div>
+
     <div class="row g-4">
         <!-- Total Order Amount -->
         <div class="col-md-6 col-lg-3">
@@ -54,8 +72,8 @@
             <div class="card card-stat p-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h6 class="text-muted mb-1">Inactive Users</h6>
-                        <h3 class="mb-0"><?= $inactiveUsers ?></h3>
+                        <h6 class="text-muted mb-1">Total Orders</h6>
+                        <h3 class="mb-0"><?= $totalorders ?></h3>
                     </div>
                     <div class="stat-icon text-warning">
                         <i class="bi bi-person-x"></i>
@@ -65,5 +83,6 @@
         </div>
     </div>
 </main>
+
 
 <?php include 'footer.php'; ?>
