@@ -1,5 +1,4 @@
 <?php
-session_start();
 include "header.php";
 
 // Error reporting (optional during development)
@@ -13,7 +12,13 @@ if (isset($_POST['login'])) {
 
     if (empty($email) || empty($password)) {
 
-        echo "<script>alert('All fields are required!');</script>";
+        echo "<script>
+Swal.fire({
+    icon: 'warning',
+    title: 'Missing Fields',
+    text: 'Please enter email and password.'
+});
+</script>";
 
     } else {
 
@@ -29,17 +34,35 @@ if (isset($_POST['login'])) {
                 $_SESSION['customer_id'] = $row['id'];
                 $_SESSION['customer_name'] = $row['name'];
 
-                echo "<script>
-                        alert('Login Successful!');
-                        window.location='index.php';
-                      </script>";
+               echo "<script>
+Swal.fire({
+    icon: 'success',
+    title: 'Login Successful!',
+    text: 'Welcome back!',
+    confirmButtonColor: '#3085d6'
+}).then(() => {
+    window.location='index.php';
+});
+</script>";
 
             } else {
-                echo "<script>alert('Incorrect Password!');</script>";
+                echo "<script>
+Swal.fire({
+    icon: 'error',
+    title: 'Incorrect Password',
+    text: 'Please try again.'
+});
+</script>";
             }
 
         } else {
-            echo "<script>alert('Email not registered!');</script>";
+            echo "<script>
+Swal.fire({
+    icon: 'error',
+    title: 'Email Not Found',
+    text: 'This email is not registered.'
+});
+</script>";
         }
     }
 }
