@@ -10,7 +10,7 @@ if (!isset($_SESSION['user'])) {
 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
     <div class="container">
 
-        <div class="card bg-white  text-black mb-4 shadow">
+        <!-- <div class="card bg-white  text-black mb-4 shadow">
             <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center">
                 <h4 class="mb-2 mb-md-0">Category</h4>
                 <a href="category.php" class="btn btn-primary btn-sm">+ Add category</a>
@@ -54,7 +54,7 @@ if (!isset($_SESSION['user'])) {
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div> -->
 
         <!-- product SECTION -->
         <div class="card bg-white  text-black mb-4 shadow">

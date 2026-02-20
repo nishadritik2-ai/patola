@@ -46,7 +46,7 @@ if (isset($_POST['submit'])) {
                 <label for="exampleInputName" class="form-label">Name</label>
                 <input name="name" type="text" placeholder="Enter product Name" class="form-control">
             </div>
-            <div class="mb-3">
+            <div class="mb-3 d-none">
                 <label for="category" class="form-label">category</label>
                 <select name="category" id="category" class="form-control">
                     <option value="0" selected>select category</option>
@@ -71,7 +71,7 @@ if (isset($_POST['submit'])) {
                     id="exampleInputPrice"
                     required>
             </div>
-            <div class="mb-3">
+            <div class="mb-3 d-none">
                 <label for="exampleInputStock" class="form-label">Stock</label>
                 <input name="stock" type="number" placeholder="Enter Stock Quantity" class="form-control">
             </div>

@@ -99,17 +99,20 @@ if ($res && $row = $res->fetch_assoc()) {
                     <h4 class="text-white">Admin Panel</h4>
                 </div>
                 <ul class="nav flex-column">
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link active" href="dashboard.php"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="alluser.php"><i class="bi bi-people me-2"></i> Users</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="order-data.php"><i class="bi bi-cart4 me-2"></i> Orders</a>
+                    </li> -->
+                    <li class="nav-item">
                         <a class="nav-link" href="all-product.php"><i class="bi bi-box-seam me-2"></i> Products</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="order-data.php"><i class="bi bi-cart4 me-2"></i> Orders</a>
+                        <a class="nav-link" href="logout.php"><i class="bi bi-box-seam me-2"></i> Logout</a>
                     </li>
                 </ul>
             </nav>
