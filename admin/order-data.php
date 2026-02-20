@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if(!isset($_SESSION['user'])){
+if (!isset($_SESSION['user'])) {
     header("Location: login.php");
     exit();
 }
@@ -224,9 +224,9 @@ $orderQuery = mysqli_query($con, "
                                                 </small>
                                             </div>
 
-                                            <div>
-                                                <strong>₹<?= number_format($item['total'], 2) ?></strong>
-                                            </div>
+                                            <strong>
+                                                ₹<?= number_format($item['price'] * $item['quantity'], 2) ?>
+                                            </strong>
 
                                         </div>
 

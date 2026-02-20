@@ -1,6 +1,7 @@
 <?php
 include "admin/connection.php";
 
+
 /* ================= LOGIN CHECK ================= */
 if (!isset($_SESSION['customer_id'])) {
     header("Location: login.php");
@@ -42,103 +43,43 @@ if (empty($cart)) {
     header("Location: cart.php");
     exit;
 }
-
-/* ================= HANDLE ORDER SUBMISSION ================= */
-if ($_SERVER['REQUEST_METHOD'] == "POST") {
-
-    $name    = mysqli_real_escape_string($con, $_POST['name']);
-    $phone   = mysqli_real_escape_string($con, $_POST['phone']);
-    $address = mysqli_real_escape_string($con, $_POST['address']);
-    $requirement = mysqli_real_escape_string($con, $_POST['requirement']);
-
-    $payment_method = "razorpay";
-    $status = "Pending";
-    $payment_status = "Unpaid";
-    $order_date = date("Y-m-d H:i:s");
-
-    /* ===== PREPARE PRODUCT JSON ===== */
-    $products = [];
-
-    foreach ($cart as $item) {
-        $products[] = [
-            "product_id" => $item['product_id'],
-            "name"       => $item['name'],
-            "img"        => $item['img'],
-            "price"      => $item['price'],
-            "quantity"   => $item['quantity'],
-            "total"      => $item['price'] * $item['quantity']
-        ];
-    }
-
-    $product_json = mysqli_real_escape_string($con, json_encode($products));
-
-    /* ===== INSERT ORDER ===== */
-    mysqli_query($con, "
-        INSERT INTO orders 
-        (customer_id, order_date, total_amount, status, payment_method, payment_status, shipping_address, product,requirement)
-        VALUES 
-        ('$user_id', '$order_date', '$total', '$status', '$payment_method', '$payment_status', '$address', '$product_json','$requirement')
-    ");
-
-    /* ===== CLEAR CART ===== */
-    mysqli_query($con, "DELETE FROM carts WHERE user_id='$user_id'");
-
-    echo "<script>
-            alert('Order data saved successfully');
-            window.location='cart.php';
-          </script>";
-    exit;
-}
-
 ?>
 
 <?php include "header.php"; ?>
 
 <style>
-    body {
-        background: #f5f6fa;
-        font-family: Arial
-    }
-
-    .checkout-wrapper {
-        width: 90%;
-    }
-
-    .card-box {
-        background: #fff;
-        padding: 25px;
-        border-radius: 10px;
-        margin-bottom: 20px
-    }
-
-    .item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px
-    }
-
-    .summary-line {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 10px
-    }
-
-    .btn-order {
-        width: 100%;
-        padding: 12px;
-        background: #27ae60;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        font-size: 16px
-    }
-
-    @media(max-width:768px) {
-        .row {
-            flex-direction: column
-        }
-    }
+body {
+    background: #f5f6fa;
+    font-family: Arial;
+}
+.checkout-wrapper {
+    width: 90%;
+}
+.card-box {
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+.item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+.summary-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.btn-order {
+    width: 100%;
+    padding: 12px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+}
 </style>
 
 <div class="checkout-wrapper container cus-p">
@@ -148,10 +89,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         <div class="col-md-6">
             <div class="card-box">
                 <h3>Checkout Details</h3>
-                <form method="POST">
+
+                <form id="checkoutForm">
 
                     <div class="row">
-
                         <div class="col-md-6 mb-3">
                             <label>Full Name</label>
                             <input type="text" name="name" class="form-control"
@@ -163,9 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                             <input type="text" name="phone" class="form-control"
                                 value="<?= htmlspecialchars($customer['phone'] ?? '') ?>" required>
                         </div>
-
                     </div>
-
 
                     <div class="form-group mb-3">
                         <label>Full Address</label>
@@ -175,13 +114,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
                     <div class="form-group mb-3">
                         <label>Size</label>
-                        <input type="text" name="requirement" class="form-control" placeholder="XS,S,M,L,XL,XXL"
+                        <input type="text" name="requirement" class="form-control"
+                            placeholder="XS,S,M,L,XL,XXL"
                             value="<?= htmlspecialchars($customer['requirement'] ?? '') ?>" required>
                     </div>
 
-
-                    <button type="submit" class="btn-order mt-3">
-                        Place Order
+                    <button type="button" onclick="payNow()" class="btn-order mt-3" id="payBtn">
+                        Pay ₹ <?= number_format($total, 2) ?>
                     </button>
 
                 </form>
@@ -223,11 +162,71 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                     <strong>Total</strong>
                     <strong>₹ <?= number_format($total, 2) ?></strong>
                 </div>
-
             </div>
         </div>
 
     </div>
 </div>
+
+
+
+<!-- Cashfree SDK -->
+<script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+
+<script>
+async function payNow() {
+
+    let btn = document.getElementById("payBtn");
+    btn.innerHTML = "Processing...";
+    btn.disabled = true;
+
+    Swal.fire({
+        title: "Creating Payment...",
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    const formData = new FormData(document.getElementById("checkoutForm"));
+
+    try {
+        let response = await fetch("create_cashfree_order.php", {
+            method: "POST",
+            body: formData
+        });
+
+        let data = await response.json();
+
+        if (data.payment_session_id) {
+
+            Swal.close();
+
+            const cashfree = Cashfree({
+                mode: "sandbox" // 🔥 CHANGE TO production WHEN LIVE ======================
+            });
+
+            cashfree.checkout({
+                paymentSessionId: data.payment_session_id,
+                redirectTarget: "_self"
+            });
+
+        } else {
+            throw new Error("Unable to create payment");
+        }
+
+    } catch (error) {
+
+        btn.innerHTML = "Pay Now";
+        btn.disabled = false;
+
+        Swal.fire({
+            icon: "error",
+            title: "Payment Error",
+            text: "Something went wrong!"
+        });
+    }
+}
+</script>
 
 <?php include "footer.php"; ?>

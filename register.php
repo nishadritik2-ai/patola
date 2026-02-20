@@ -13,17 +13,27 @@ if (isset($_POST['submit'])) {
 
     // Check Empty Fields
     if (empty($name) || empty($phone) || empty($address) || empty($email) || empty($_POST['password'])) {
-        echo "<script>alert('All fields are required!');</script>";
-    } 
-    else {
+        echo "<script>
+Swal.fire({
+    icon: 'warning',
+    title: 'Missing Fields',
+    text: 'All fields are required!'
+});
+</script>";
+    } else {
 
         // Check if email already exists
         $checkEmail = mysqli_query($con, "SELECT * FROM customer WHERE email='$email'");
 
         if (mysqli_num_rows($checkEmail) > 0) {
 
-            echo "<script>alert('Email already registered!');</script>";
-
+           echo "<script>
+Swal.fire({
+    icon: 'error',
+    title: 'Email Already Registered',
+    text: 'Please use a different email address.'
+});
+</script>";
         } else {
 
             $sql = "INSERT INTO customer (name, phone, address, email, password, status) 
@@ -33,11 +43,23 @@ if (isset($_POST['submit'])) {
 
             if ($result) {
                 echo "<script>
-                        alert('Registered Successfully!');
-                        window.location='index.php';
-                      </script>";
+Swal.fire({
+    icon: 'success',
+    title: 'Registration Successful!',
+    text: 'Your account has been created successfully.',
+    confirmButtonColor: '#3085d6'
+}).then(() => {
+    window.location='index.php';
+});
+</script>";
             } else {
-                echo "<script>alert('Database Error: " . mysqli_error($con) . "');</script>";
+                echo "<script>
+Swal.fire({
+    icon: 'error',
+    title: 'Database Error',
+    text: '" . mysqli_error($con) . "'
+});
+</script>";
             }
         }
     }
