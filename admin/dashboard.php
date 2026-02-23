@@ -23,7 +23,7 @@ if(!isset($_SESSION['user'])){
 
     <div class="row g-4">
         <!-- Total Order Amount -->
-        <div class="col-md-6 col-lg-3">
+        <div class="col-md-6 col-lg-6">
             <div class="card card-stat p-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -38,7 +38,7 @@ if(!isset($_SESSION['user'])){
         </div>
 
         <!-- Today's Orders -->
-        <div class="col-md-6 col-lg-3">
+        <div class="col-md-6 col-lg-6">
             <div class="card card-stat p-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -53,7 +53,7 @@ if(!isset($_SESSION['user'])){
         </div>
 
         <!-- Total Users -->
-        <div class="col-md-6 col-lg-3">
+        <div class="col-md-6 col-lg-6">
             <div class="card card-stat p-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
@@ -68,7 +68,7 @@ if(!isset($_SESSION['user'])){
         </div>
 
         <!-- Inactive Users -->
-        <div class="col-md-6 col-lg-3">
+        <div class="col-md-6 col-lg-6">
             <div class="card card-stat p-3">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>

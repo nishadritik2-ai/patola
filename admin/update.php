@@ -1,68 +1,92 @@
 <?php
 session_start();
-
-if(!isset($_SESSION['user'])){
+if (!isset($_SESSION['user'])) {
     header("Location: login.php");
     exit();
 }
-?>
 
-<?php
 include "connection.php";
 
 $id = intval($_GET['id']);
 
 // Fetch existing product
-$sql = "SELECT * FROM product WHERE id=$id";
-$result = mysqli_query($con, $sql);
-$row = mysqli_fetch_assoc($result);
+$productQuery = mysqli_query($con, "SELECT * FROM product WHERE id=$id");
+$product = mysqli_fetch_assoc($productQuery);
 
 if (isset($_POST['submit'])) {
 
     $name  = mysqli_real_escape_string($con, $_POST['name']);
     $slug  = mysqli_real_escape_string($con, $_POST['slug']);
     $des   = mysqli_real_escape_string($con, $_POST['des']);
-    $price = mysqli_real_escape_string($con, $_POST['price']); // ✅ Added Price
-    $stock = mysqli_real_escape_string($con, $_POST['stock']); // ✅ Added stock
+    $price = mysqli_real_escape_string($con, $_POST['price']);
+    $stock = mysqli_real_escape_string($con, $_POST['stock']);
+    $size  = mysqli_real_escape_string($con, $_POST['size']);
 
     $folder = "images/";
 
-    // ✅ If new image selected
+    // ================= MAIN IMAGE =================
+    $img1 = $product['img'];
     if (!empty($_FILES['image']['name'])) {
+        $file1 = time() . "_1_" . $_FILES['image']['name'];
+        $img1 = $folder . $file1;
+        move_uploaded_file($_FILES['image']['tmp_name'], $img1);
 
-        $file = time() . "_" . $_FILES['image']['name'];
-        $tmpname = $_FILES['image']['tmp_name'];
-        $fileurl = $folder . $file;
-
-        // Move new image
-        move_uploaded_file($tmpname, $fileurl);
-
-        // Delete old image (if exists)
-        if (!empty($row['img']) && file_exists($row['img'])) {
-            unlink($row['img']);
+        if (!empty($product['img']) && file_exists($product['img'])) {
+            unlink($product['img']);
         }
-
-        $sql = "UPDATE product 
-                SET name='$name',
-                    slug='$slug',
-                    price='$price',   -- ✅ Price Added
-                    stock='$stock',   -- ✅ Price Added
-                    img='$fileurl',
-                    des='$des'
-                WHERE id=$id";
-    } else {
-
-        // Update without changing image
-        $sql = "UPDATE product 
-                SET name='$name',
-                    slug='$slug',
-                    price='$price',   -- ✅ Price Added
-                    stock='$stock',   -- ✅ Price Added
-                    des='$des'
-                WHERE id=$id";
     }
 
-    $update = mysqli_query($con, $sql);
+    // ================= IMAGE 2 =================
+    $img2 = $product['img2'];
+    if (!empty($_FILES['image2']['name'])) {
+        $file2 = time() . "_2_" . $_FILES['image2']['name'];
+        $img2 = $folder . $file2;
+        move_uploaded_file($_FILES['image2']['tmp_name'], $img2);
+
+        if (!empty($product['img2']) && file_exists($product['img2'])) {
+            unlink($product['img2']);
+        }
+    }
+
+    // ================= IMAGE 3 =================
+    $img3 = $product['img3'];
+    if (!empty($_FILES['image3']['name'])) {
+        $file3 = time() . "_3_" . $_FILES['image3']['name'];
+        $img3 = $folder . $file3;
+        move_uploaded_file($_FILES['image3']['tmp_name'], $img3);
+
+        if (!empty($product['img3']) && file_exists($product['img3'])) {
+            unlink($product['img3']);
+        }
+    }
+
+    // ================= IMAGE 4 =================
+    $img4 = $product['img4'];
+    if (!empty($_FILES['image4']['name'])) {
+        $file4 = time() . "_4_" . $_FILES['image4']['name'];
+        $img4 = $folder . $file4;
+        move_uploaded_file($_FILES['image4']['tmp_name'], $img4);
+
+        if (!empty($product['img4']) && file_exists($product['img4'])) {
+            unlink($product['img4']);
+        }
+    }
+
+    // ================= UPDATE QUERY =================
+    $updateQuery = "UPDATE product SET
+        name='$name',
+        slug='$slug',
+        price='$price',
+        stock='$stock',
+        size='$size',
+        des='$des',
+        img='$img1',
+        img2='$img2',
+        img3='$img3',
+        img4='$img4'
+        WHERE id=$id";
+
+    $update = mysqli_query($con, $updateQuery);
 
     if ($update) {
         echo "<script>
@@ -74,58 +98,104 @@ if (isset($_POST['submit'])) {
         echo "Error: " . mysqli_error($con);
     }
 }
-
 ?>
 
-<?php include 'header.php' ?>
-<?php
-$sql = "SELECT * FROM product Where id=$id";
-$result = mysqli_query($con, $sql);
+<?php include 'header.php'; ?>
 
-while ($row = mysqli_fetch_assoc($result)) { ?>
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-        <div class="container">
-            <h2>Update Product</h2>
-            <form method="post" enctype="multipart/form-data">
-                <div class="mb-3">
-                    <label for="exampleInputName" class="form-label">Name</label>
-                    <input name="name" type="text" value="<?php echo $row['name'] ?> " class="form-control" id="exampleInputname">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Price</label>
-                    <input name="price"
-                        type="number"
-                        step="0.01"
-                        class="form-control"
-                        value="<?php echo $row['price']; ?>"
-                        required>
-                </div>
-                <div class="mb-3">
-                    <label for="exampleInputStock" class="form-label">Stock</label>
-                    <input name="stock" value="<?php echo $row['stock'] ?>" type="number" placeholder="Enter Stock Quantity" class="form-control" id="exampleInputStock">
-                </div>
+<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+    <div class="container">
+        <h2>Update Product</h2>
 
-                <div class="mb-3">
-                    <label for="exampleInputage" class="form-label">Slug</label>
-                    <input name="slug" type="text" value="<?php echo $row['slug'] ?> " class="form-control" id="exampleInputage">
-                </div>
-                <div>
-                    <label for="exampleInputage" class="form-label">image</label>
-                    <input type="file" name="image">
-                </div>
-                <img src="<?php echo $row['img'] ?>" height="100">
-                <div class="mb-3">
-                    <label for="exampleInputpost" class="form-label">Description</label>
-                    <textarea id="editor" name="des"><?php echo $row['des'] ?></textarea>
-                </div>
-                <button name="submit" type="submit" class="btn btn-primary">Submit</button>
-                <!-- <button type="submit" name="submit">Submit</button> -->
-            </form>
-        </div>
-    </main>
+        <form method="post" enctype="multipart/form-data">
 
-<?php
-}
-?>
+            <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input name="name" type="text" value="<?php echo $product['name']; ?>" class="form-control">
+            </div>
 
-<?php include 'footer.php' ?>
+            <div class="mb-3">
+                <label class="form-label">Price</label>
+                <input name="price" type="number" step="0.01"
+                    value="<?php echo $product['price']; ?>"
+                    class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Size</label>
+                <input name="size" type="text"
+                    value="<?php echo $product['size']; ?>"
+                    class="form-control">
+            </div>
+
+            <div class="mb-3 d-none">
+                <input name="stock" value="<?php echo $product['stock']; ?>" type="number">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Slug</label>
+                <input name="slug" type="text"
+                    value="<?php echo $product['slug']; ?>"
+                    class="form-control">
+            </div>
+            <div class="row">
+                <div class="col-md-6"> <!-- MAIN IMAGE -->
+                    <div class="mb-3">
+                        <label>Main Image</label><br>
+                        <input type="file" name="image" onchange="previewImage(this,'preview1')">
+                        <br>
+                        <img src="<?php echo $product['img']; ?>" height="100">
+                        <br>
+                        <img style="display:none; margin-top:10px;" height="100" id="preview1">
+                    </div>
+                </div>
+                <div class="col-md-6"><!-- IMAGE 2 -->
+                    <div class="mb-3">
+                        <label>Image 2</label><br>
+                        <input type="file" name="image2" onchange="previewImage(this,'preview2')">
+                        <br>
+                        <img src="<?php echo $product['img2']; ?>" height="100">
+                        <br>
+                        <img style="display:none; margin-top:10px;" height="100" id="preview2">
+                    </div>
+                </div>
+                <div class="col-md-6"><!-- IMAGE 3 -->
+                    <div class="mb-3">
+                        <label>Image 3</label><br>
+                        <input type="file" name="image3" onchange="previewImage(this,'preview3')">
+                        <br>
+                        <img src="<?php echo $product['img3']; ?>" height="100">
+                        <br>
+                        <img style="display:none; margin-top:10px;" height="100" id="preview3">
+                    </div>
+                </div>
+                <div class="col-md-6"><!-- IMAGE 4 -->
+                    <div class="mb-3">
+                        <label>Image 4</label><br>
+                        <input type="file" name="image4" onchange="previewImage(this,'preview4')">
+                        <br>
+                        <img src="<?php echo $product['img4']; ?>" height="100">
+                        <br>
+                        <img style="display:none; margin-top:10px;" height="100" id="preview4">
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+            <div class="mb-3">
+                <label class="form-label">Description</label>
+                <textarea name="des" id="editor" class="form-control"><?php echo $product['des']; ?></textarea>
+            </div>
+
+            <button name="submit" type="submit" class="btn btn-primary">Update</button>
+
+        </form>
+    </div>
+</main>
+
+<?php include 'footer.php'; ?>

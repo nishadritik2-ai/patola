@@ -46,7 +46,7 @@ while ($row = mysqli_fetch_assoc($result)) {
         }
     </style>
     <!-- Header Start -->
-    <div class="container-fluid bg-breadcrumb" style="background-image:url(admin/<?php echo $row['img'] ?>)">
+    <div class="container-fluid bg-breadcrumb" style="background-image:url(img/product-ban.webp)">
         <div class="container text-center py-5" style="max-width: 900px;">
             <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s"><?php echo $row['name'] ?></h4>
             <ol class="breadcrumb d-flex justify-content-center mb-0 wow fadeInDown" data-wow-delay="0.3s">
@@ -80,6 +80,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                                     Buy Now
                                 </button> -->
                                 <div class="cart-container" data-product="<?= $row['id'] ?>">
+                                <h5 class="mb-4" style="color:#97621e">Size Available : <?= $row['size'] ?></h5>
                                     <button class="add-btn btn btn-primary">Add to Cart</button>
                                     <div class="qty-box" style="display:none;padding: 5px 15px;border: 1px solid #000;border-radius: 21px;">
                                         <button class="minus btn btn-sm btn-outline-secondary" aria-label="Decrease quantity">−</button>

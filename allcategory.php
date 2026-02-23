@@ -1,4 +1,7 @@
-<?php include 'header.php' ?>
+<?php include 'header.php';
+
+
+?>
 
 <!-- Header Start -->
 <div class="container-fluid bg-breadcrumb" style="background-image:url(img/shop-ban.jpeg)">
@@ -22,7 +25,7 @@
         <div class="row g-4 justify-content-center">
             <?php
 
-            $sql = "SELECT * FROM product";
+            $sql = "SELECT * FROM category";
             $result = mysqli_query($con, $sql);
             while ($row = mysqli_fetch_assoc($result)) {
             ?>
@@ -32,8 +35,7 @@
                             <img src="admin/<?php echo $row['img'] ?>" class="img-fluid rounded-top w-100" alt="">
                         </div>
                         <div style="text-align:center" class="rounded-bottom p-4">
-                            <a href="product/<?php echo $row['slug'] ?>"><?php echo $row['name']  ?></a>
-                            <p>₹<?php echo $row['price'] ?></p>
+                            <a href="category/<?php echo $row['slug'] ?>"><?php echo $row['name']  ?></a>
                         </div>
                     </div>
                 </div>

@@ -209,6 +209,7 @@ ini_set('display_errors', 1);
                 <div class="navbar-nav ms-auto py-0">
                     <a href="index.php" class="nav-item nav-link active">Home</a>
                     <a href="about.php" class="nav-item nav-link">About Us</a>
+                    <a href="allcategory.php" class="nav-item nav-link">Categories</a>
                     <a href="shop.php" class="nav-item nav-link">Products</a>
                     <a href="contact.php" class="nav-item nav-link">Contact Us</a>
                 </div>

@@ -19,7 +19,6 @@ Swal.fire({
     text: 'Please enter email and password.'
 });
 </script>";
-
     } else {
 
         $sql = "SELECT * FROM customer WHERE email='$email'";
@@ -34,7 +33,7 @@ Swal.fire({
                 $_SESSION['customer_id'] = $row['id'];
                 $_SESSION['customer_name'] = $row['name'];
 
-               echo "<script>
+                echo "<script>
 Swal.fire({
     icon: 'success',
     title: 'Login Successful!',
@@ -44,7 +43,6 @@ Swal.fire({
     window.location='index.php';
 });
 </script>";
-
             } else {
                 echo "<script>
 Swal.fire({
@@ -54,7 +52,6 @@ Swal.fire({
 });
 </script>";
             }
-
         } else {
             echo "<script>
 Swal.fire({
@@ -72,39 +69,51 @@ Swal.fire({
 
 <section>
     <div class="container">
-        <div class="row d-flex justify-content-center align-items-center py-5 cus-p">
+        <div class="row d-flex justify-content-center align-items-center py-5 cus-p  ">
 
             <div class="col-lg-6 col-md-6">
-                <img src="img/draw2.webp" class="img-fluid" alt="Sample image">
+                <img src="img/login.webp" class="rounded" style="width: 100%;" alt="Sample image">
             </div>
 
-            <div class="col-lg-6 col-md-6">
+            <div class="col-lg-6 col-md-6 ">
+
+                <!-- Logo Section -->
+                <div class="text-center mb-4">
+                    <img src="img/logo2.png" alt="Website Logo"
+                        style="max-width:220px; height:auto;">
+                </div>
+
+                <!-- Heading Section -->
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold">Patola Fashion Boutique</h2>
+                    <p class="text-muted">Login to your account</p>
+                </div>
+
                 <form method="POST">
 
                     <!-- Email -->
                     <div class="form-outline mb-4">
-                        <input name="email" type="email" 
-                               class="form-control form-control-lg"
-                               placeholder="Enter a valid email address" required />
+                        <input name="email" type="email"
+                            class="form-control form-control-lg"
+                            placeholder="Enter a valid email address" required />
                         <label class="form-label">Email address</label>
                     </div>
 
                     <!-- Password -->
                     <div class="form-outline mb-3">
-                        <input name="password" type="password" 
-                               class="form-control form-control-lg"
-                               placeholder="Enter password" required />
+                        <input name="password" type="password"
+                            class="form-control form-control-lg"
+                            placeholder="Enter password" required />
                         <label class="form-label">Password</label>
                     </div>
 
                     <div class="text-center text-lg-start mt-4 pt-2">
                         <button name="login" type="submit"
-                                class="btn btn-primary btn-lg"
-                                style="padding-left: 2.5rem; padding-right: 2.5rem;">
+                            class="btn btn-primary btn-lg w-100">
                             Login
                         </button>
 
-                        <p class="small fw-bold mt-2 pt-1 mb-0">
+                        <p class="small fw-bold mt-3 mb-0 text-center">
                             Don't have an account?
                             <a href="register.php" class="link-danger">Register</a>
                         </p>
