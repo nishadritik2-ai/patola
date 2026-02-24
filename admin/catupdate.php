@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if(!isset($_SESSION['user'])){
+if (!isset($_SESSION['user'])) {
     header("Location: login.php");
     exit();
 }
@@ -37,6 +37,7 @@ if (isset($_POST['submit'])) {
         if (!empty($row['img']) && file_exists($row['img'])) {
             unlink($row['img']);
         }
+        
 
         $sql = "UPDATE category 
                 SET name='$name',
@@ -88,6 +89,7 @@ while ($row = mysqli_fetch_assoc($result)) { ?>
                     <img src="<?php echo $row['img'] ?>" height="100">
                 </div>
                 
+
                 <button name="submit" type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>

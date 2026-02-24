@@ -5,17 +5,7 @@
 
 <script src="https://cdn.ckeditor.com/4.18.0/standard/ckeditor.js"></script>
 
-<script>
-    function previewImage(input) {
-        const file = input.files[0];
-        const preview = document.getElementById("preview");
 
-        if (file) {
-            preview.src = URL.createObjectURL(file);
-            preview.style.display = "block";
-        }
-    }
-</script>
 <script>
     CKEDITOR.replace('editor');
     // CKEDITOR.replace('editor1');
@@ -74,6 +64,23 @@
                 }
             });
     }
+</script>
+
+<script>
+function previewImage(input, previewId) {
+    var file = input.files[0];
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+        var preview = document.getElementById(previewId);
+        preview.src = e.target.result;
+        preview.style.display = "block";
+    }
+
+    if(file){
+        reader.readAsDataURL(file);
+    }
+}
 </script>
 
 </body>

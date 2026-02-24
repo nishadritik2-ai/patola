@@ -70,7 +70,8 @@ if (!isset($_SESSION['user'])) {
                             <th>ID</th>
                             <th>Product Name</th>
                             <th>Price</th>
-                            <th>stock</th>
+                            <th>size</th>
+                            <!-- <th>stock</th> -->
                             <th>Slug</th>
                             <th>Image</th>
                             <th class="text-center">Actions</th>
@@ -87,7 +88,8 @@ if (!isset($_SESSION['user'])) {
                                 <td><?= $row['id'] ?></td>
                                 <td><?= htmlspecialchars($row['name']) ?></td>
                                 <td><?= htmlspecialchars($row['price']) ?></td>
-                                <td><?= htmlspecialchars($row['stock']) ?></td>
+                                <td><?= htmlspecialchars($row['size']) ?></td>
+                                <!-- <td><?= htmlspecialchars($row['stock']) ?></td> -->
                                 <td><?= htmlspecialchars($row['slug']) ?></td>
                                 <td>
                                     <img src="<?= $row['img'] ?>" class="img-thumbnail" width="80">

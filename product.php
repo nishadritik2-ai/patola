@@ -46,7 +46,7 @@ while ($row = mysqli_fetch_assoc($result)) {
         }
     </style>
     <!-- Header Start -->
-    <div class="container-fluid bg-breadcrumb" style="background-image:url(admin/<?php echo $row['img'] ?>)">
+    <div class="container-fluid bg-breadcrumb" style="background-image:url(img/product-ban.webp)">
         <div class="container text-center py-5" style="max-width: 900px;">
             <h4 class="text-white display-4 mb-4 wow fadeInDown" data-wow-delay="0.1s"><?php echo $row['name'] ?></h4>
             <ol class="breadcrumb d-flex justify-content-center mb-0 wow fadeInDown" data-wow-delay="0.3s">
@@ -80,6 +80,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                                     Buy Now
                                 </button> -->
                                 <div class="cart-container" data-product="<?= $row['id'] ?>">
+                                <h5 class="mb-4" style="color:#97621e">Size Available : <?= $row['size'] ?></h5>
                                     <button class="add-btn btn btn-primary">Add to Cart</button>
                                     <div class="qty-box" style="display:none;padding: 5px 15px;border: 1px solid #000;border-radius: 21px;">
                                         <button class="minus btn btn-sm btn-outline-secondary" aria-label="Decrease quantity">−</button>
@@ -99,47 +100,73 @@ while ($row = mysqli_fetch_assoc($result)) {
                 </div>
                 <div class="col-lg-6 col-md-6 wow fadeInRight" data-wow-delay="0.2s" style="justify-items: center;">
 
-                    <div id="imageSlider"
-                        class="carousel slide rounded position-relative overflow-hidden"
-                        data-bs-ride="carousel">
+    <div id="imageSlider"
+        class="carousel slide rounded position-relative overflow-hidden"
+        data-bs-ride="carousel">
 
-                        <!-- Indicators -->
-                        <div class="carousel-indicators">
-                            <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="0" class="active"></button>
-                            <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="1"></button>
-                        </div>
+        <!-- Indicators -->
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="0" class="active"></button>
+            <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="1"></button>
+            <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="2"></button>
+            <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="3"></button>
+            <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="4"></button>
+        </div>
 
-                        <!-- Slider Images -->
-                        <div class="carousel-inner">
+        <!-- Slider Images -->
+        <div class="carousel-inner">
 
-                            <div class="carousel-item active">
-                                <img src="admin/<?php echo $row['img']; ?>" alt="">
-                            </div>
+            <!-- Main Image -->
+            <div class="carousel-item active">
+                <img src="admin/<?php echo $row['img']; ?>" class="d-block w-100" alt="">
+            </div>
 
-                            <div class="carousel-item">
-                                <img src="img/pro-size.jpeg" alt="">
-                            </div>
+            <!-- Image 2 -->
+            <?php if(!empty($row['img2'])) { ?>
+            <div class="carousel-item">
+                <img src="admin/<?php echo $row['img2']; ?>" class="d-block w-100" alt="">
+            </div>
+            <?php } ?>
 
-                        </div>
+            <!-- Image 3 -->
+            <?php if(!empty($row['img3'])) { ?>
+            <div class="carousel-item">
+                <img src="admin/<?php echo $row['img3']; ?>" class="d-block w-100" alt="">
+            </div>
+            <?php } ?>
 
-                        <!-- Controls -->
-                        <button class="carousel-control-prev"
-                            type="button"
-                            data-bs-target="#imageSlider"
-                            data-bs-slide="prev" style="background-color: black;">
-                            <span class="carousel-control-prev-icon"></span>
-                        </button>
+            <!-- Image 4 -->
+            <?php if(!empty($row['img4'])) { ?>
+            <div class="carousel-item">
+                <img src="admin/<?php echo $row['img4']; ?>" class="d-block w-100" alt="">
+            </div>
+            <?php } ?>
 
-                        <button class="carousel-control-next"
-                            type="button"
-                            data-bs-target="#imageSlider"
-                            data-bs-slide="next" style="background-color: black;">
-                            <span class="carousel-control-next-icon"></span>
-                        </button>
+            <!-- Static Size Image (Optional) -->
+            <div class="carousel-item">
+                <img src="img/pro-size.jpeg" class="d-block w-100" alt="">
+            </div>
 
-                    </div>
+        </div>
 
-                </div>
+        <!-- Controls -->
+        <button class="carousel-control-prev"
+            type="button"
+            data-bs-target="#imageSlider"
+            data-bs-slide="prev" style="background-color: black;">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+
+        <button class="carousel-control-next"
+            type="button"
+            data-bs-target="#imageSlider"
+            data-bs-slide="next" style="background-color: black;">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+
+    </div>
+
+</div>
             </div>
         </div>
     </div>

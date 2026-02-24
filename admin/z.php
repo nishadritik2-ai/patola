@@ -433,3 +433,5 @@
 </section>
 
 <?php include 'footer.php' ?>
+Lorem ipsum dolor sit amet consectetur, adipisicing elit. Beatae, adipisci.
+Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cumque saepe ad aliquam ex suscipit voluptatum maiores. Ex in, placeat veritatis enim, necessitatibus nesciunt labore porro similique asperiores soluta, odio odit.\

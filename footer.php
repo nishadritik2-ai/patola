@@ -2,7 +2,7 @@
  <div class="container-fluid footer py-5 wow fadeIn" data-wow-delay="0.2s">
      <div class="container py-5 border-start-0 border-end-0" style="border: 1px solid; border-color: rgb(255, 255, 255, 0.08);">
          <div class="row g-5">
-             <div class="col-md-6 col-lg-6 col-xl-3">
+             <div class="col-md-3 col-lg-3 col-xl-3">
                  <div class="footer-item">
                      <a href="index.php" class="p-0">
                          <!-- <h4 class="text-white"><i class="fas fa-search-dollar me-3"></i>Stocker</h4> -->
@@ -12,7 +12,7 @@
 
                  </div>
              </div>
-             <div class="col-md-6 col-lg-6 col-xl-2">
+             <div class="col-md-3 col-lg-3 col-xl-3">
                  <div class="footer-item">
                      <h4 class="text-white mb-4">Quick Links</h4>
                      <a href=""><i class="fas fa-angle-right me-2"></i>Home</a>
@@ -21,25 +21,22 @@
                      <a href="contact.php"><i class="fas fa-angle-right me-2"></i> Contact us</a>
                  </div>
              </div>
-             <div class="col-md-6 col-lg-6 col-xl-2">
+             <div class="col-md-3 col-lg-3 col-xl-3">
                  <div class="footer-item">
                      <h4 class="text-white mb-4">Products</h4>
+                     <?php
 
-                     <a href="">
-                         <i class="fas fa-angle-right me-2"></i>
-                     </a>
+                        $sql = "SELECT * FROM product LIMIT 5";
+                        $result = mysqli_query($con, $sql);
+                        while ($row = mysqli_fetch_assoc($result)) {
+                        ?>
+                         <a href="product/<?php echo $row['slug'] ?>">
+                             <i class="fas fa-angle-right me-2"></i><?php echo $row['name']  ?>
+                         </a>
+                     <?php } ?>
                  </div>
              </div>
-             <div class="col-md-6 col-lg-6 col-xl-2">
-                 <div class="footer-item">
-                     <h4 class="text-white mb-4">Products</h4>
-
-                     <a href="">
-                         <i class="fas fa-angle-right me-2"></i>
-                     </a>
-                 </div>
-             </div>
-             <div class="col-md-6 col-lg-6 col-xl-3">
+             <div class="col-md-3 col-lg-3 col-xl-3">
                  <div class="footer-item">
                      <h4 class="text-white mb-4">Contact Info</h4>
                      <div class="d-flex align-items-center">

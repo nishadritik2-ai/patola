@@ -27,7 +27,7 @@ Swal.fire({
 
         if (mysqli_num_rows($checkEmail) > 0) {
 
-           echo "<script>
+            echo "<script>
 Swal.fire({
     icon: 'error',
     title: 'Email Already Registered',
@@ -73,51 +73,73 @@ Swal.fire({
     <div class="container">
         <div class="row d-flex justify-content-center align-items-center py-5 cus-p">
             <div class="col-lg-6 col-md-6">
-                <img src="img/draw2.webp"
-                    class="img-fluid" alt="Sample image">
+                <img src="img/register.jpg"
+                    style="width: 100%;" class="rounded" alt="Sample image">
             </div>
             <div class="col-lg-6 col-md-6">
+
+                <!-- Logo Section -->
+                <div class="text-center mb-4">
+                    <img src="img/logo2.png" alt="Website Logo"
+                        style="max-width:120px; height:auto;">
+                </div>
+
+                <!-- Heading Section -->
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold">Patola Fashion Boutique</h2>
+                    <p style="color: black;">Register to get started</p>
+                </div>
+
                 <form action="" method="POST">
+
                     <!-- Full Name -->
                     <div class="form-outline mb-4">
-                        <input name="name" type="text" id="name" class="form-control form-control-lg"
-                            placeholder="Enter your full name" />
+                        <input name="name" type="text" id="name"
+                            class="form-control form-control-lg"
+                            placeholder="Enter your full name" required />
                         <label class="form-label" for="name">Full Name</label>
                     </div>
 
                     <!-- Phone -->
                     <div class="form-outline mb-4">
-                        <input name="phone" type="tel" id="phone" class="form-control form-control-lg"
-                            placeholder="Enter your phone number" />
+                        <input name="phone" type="tel" id="phone"
+                            class="form-control form-control-lg"
+                            placeholder="Enter your phone number" required />
                         <label class="form-label" for="phone">Phone Number</label>
                     </div>
 
                     <!-- Address -->
                     <div class="form-outline mb-4">
-                        <textarea name="address" id="address" class="form-control form-control-lg"
-                            placeholder="Enter your address" rows="3"></textarea>
+                        <textarea name="address" id="address"
+                            class="form-control form-control-lg"
+                            placeholder="Enter your address"
+                            rows="3" required></textarea>
                         <label class="form-label" for="address">Address</label>
                     </div>
 
-                    <!-- Email input -->
+                    <!-- Email -->
                     <div class="form-outline mb-4">
-                        <input name="email" type="email" id="form3Example3" class="form-control form-control-lg"
-                            placeholder="Enter a valid email address" />
-                        <label class="form-label" for="form3Example3">Email address</label>
+                        <input name="email" type="email"
+                            class="form-control form-control-lg"
+                            placeholder="Enter a valid email address" required />
+                        <label class="form-label">Email address</label>
                     </div>
 
-                    <!-- Password input -->
+                    <!-- Password -->
                     <div class="form-outline mb-3">
-                        <input name="password" type="password" id="form3Example4" class="form-control form-control-lg"
-                            placeholder="Enter password" />
-                        <label class="form-label" for="form3Example4">Password</label>
+                        <input name="password" type="password"
+                            class="form-control form-control-lg"
+                            placeholder="Enter password" required />
+                        <label class="form-label">Password</label>
                     </div>
 
-                    <div class="text-center text-lg-start mt-4 pt-2">
-                        <button name="submit" type="submit" class="btn btn-primary btn-lg"
-                            style="padding-left: 2.5rem; padding-right: 2.5rem;">Register</button>
+                    <div class="text-center mt-4">
+                        <button name="submit" type="submit"
+                            class="btn btn-primary btn-lg w-100">
+                            Register
+                        </button>
 
-                        <p class="small fw-bold mt-2 pt-1 mb-0">
+                        <p class="small fw-bold mt-3 mb-0">
                             Already have an account?
                             <a href="login.php" class="link-danger">Login</a>
                         </p>

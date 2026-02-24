@@ -38,7 +38,7 @@ if ($res && $row = $res->fetch_assoc()) {
 // Inactive users (status = 0)
 $res = $conn->query("SELECT COUNT(*) AS cnt FROM orders");
 if ($res && $row = $res->fetch_assoc()) {
- $totalorders = $row['cnt'];
+    $totalorders = $row['cnt'];
 }
 ?>
 <!DOCTYPE html>
@@ -87,6 +87,10 @@ if ($res && $row = $res->fetch_assoc()) {
             font-size: 2.5rem;
             opacity: .8;
         }
+
+        .cke_notifications_area {
+            display: none;
+        }
     </style>
 </head>
 
@@ -106,10 +110,13 @@ if ($res && $row = $res->fetch_assoc()) {
                         <a class="nav-link" href="alluser.php"><i class="bi bi-people me-2"></i> Users</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="order-data.php"><i class="bi bi-cart4 me-2"></i> Orders</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="all-product.php"><i class="bi bi-box-seam me-2"></i> Products</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="order-data.php"><i class="bi bi-cart4 me-2"></i> Orders</a>
+                        <a class="nav-link" href="logout.php"><i class="bi bi-box-seam me-2"></i> Logout</a>
                     </li>
                 </ul>
             </nav>

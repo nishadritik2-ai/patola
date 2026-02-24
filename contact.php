@@ -126,30 +126,35 @@
                 <h4 class="text-primary">Send Your Message</h4>
                 <!-- <p style="color:#fff" class="mb-4">Connect with us today to bulk order premium ethnic and fashion wear that your customers will love!</p> -->
                 <form action="mailcontact.php" method="post">
-                    <div class="row g-4" bis_skin_checked="1">
-                        
-                        <div class="col-lg-12 col-xl-6" bis_skin_checked="1">
-                            <div class="form-floating" bis_skin_checked="1">
-                                <input type="email" class="form-control border-0" id="email" placeholder="Your Email">
+                    <div class="row g-4">
+
+                        <div class="col-lg-12 col-xl-6">
+                            <div class="form-floating">
+                                <input type="email" name="email" class="form-control border-0" id="email" placeholder="Your Email">
                                 <label for="email">Your Email</label>
                             </div>
                         </div>
-                        <div class="col-lg-12 col-xl-6" bis_skin_checked="1">
-                            <div class="form-floating" bis_skin_checked="1">
-                                <input type="phone" class="form-control border-0" id="phone" placeholder="Phone">
+
+                        <div class="col-lg-12 col-xl-6">
+                            <div class="form-floating">
+                                <input type="text" name="phone" class="form-control border-0" id="phone" placeholder="Phone">
                                 <label for="phone">Your Phone</label>
                             </div>
                         </div>
-                        <div class="col-12" bis_skin_checked="1">
-                            <div class="form-floating" bis_skin_checked="1">
-                                <textarea class="form-control border-0" placeholder="Leave a message here" id="message" style="height: 80px"></textarea>
+
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <textarea name="message" class="form-control border-0" placeholder="Leave a message here" id="message" style="height: 80px"></textarea>
                                 <label for="message">Message</label>
                             </div>
+                        </div>
 
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary w-100 py-3" style="background-color: black;">
+                                Send Message
+                            </button>
                         </div>
-                        <div class="col-12" bis_skin_checked="1">
-                            <button class="btn btn-primary w-100 py-3" style="background-color: black;">Send Message</button>
-                        </div>
+
                     </div>
                 </form>
             </div>
