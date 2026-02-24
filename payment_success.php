@@ -1,6 +1,15 @@
 <?php
 include "admin/connection.php";
-include "config_cashfree.php";
+include "config.php";
+
+if (!isset($_SESSION['customer_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
+if (!isset($_GET['order_id'])) {
+    die("Invalid Order ID");
+}
 
 $order_id = $_GET['order_id'];
 
@@ -21,47 +30,34 @@ curl_close($ch);
 
 $result = json_decode($response, true);
 
-if ($result['order_status'] == "PAID") {
+if ($result['order_status'] === "PAID") {
 
     $user_id = $_SESSION['customer_id'];
     $order_date = date("Y-m-d H:i:s");
 
-    $temp = $_SESSION['temp_order'];
-
-    /* GET CART AGAIN */
-    $query = mysqli_query($con, "
-        SELECT c.*, p.name, p.price, p.img
-        FROM carts c
-        JOIN product p ON c.product_id = p.id
-        WHERE c.user_id = '$user_id'
-    ");
-
-    $total = 0;
-    $products = [];
-
-    while ($row = mysqli_fetch_assoc($query)) {
-
-        $total += $row['price'] * $row['quantity'];
-
-        $products[] = [
-            "product_id" => $row['product_id'],
-            "name" => $row['name'],
-            "img" => $row['img'],
-            "price" => $row['price'],
-            "quantity" => $row['quantity']
-        ];
+    if (!isset($_SESSION['temp_order'])) {
+        die("Session expired. Please contact support.");
     }
 
-    $product_json = mysqli_real_escape_string($con, json_encode($products));
+    $temp = $_SESSION['temp_order'];
 
+    $total = $temp['total'];
+    $products = $temp['cart'];
+
+    $product_json = mysqli_real_escape_string($con, json_encode($products));
+    $address = mysqli_real_escape_string($con, $temp['address']);
+
+    /* ================= INSERT ORDER ================= */
     mysqli_query($con, "
         INSERT INTO orders 
-        (customer_id, order_date, total_amount, status, payment_method, payment_status, shipping_address, product, requirement)
+        (customer_id, order_date, total_amount, status, payment_method, payment_status, shipping_address, product)
         VALUES 
-        ('$user_id', '$order_date', '$total', 'Success', 'Cashfree', 'Paid', '{$temp['address']}', '$product_json', '{$temp['requirement']}')
+        ('$user_id', '$order_date', '$total', 'Success', 'Cashfree', 'Paid', '$address', '$product_json')
     ");
 
+    /* ================= CLEAR CART ================= */
     mysqli_query($con, "DELETE FROM carts WHERE user_id='$user_id'");
+
     unset($_SESSION['temp_order']);
 
     echo '
@@ -108,3 +104,4 @@ Swal.fire({
 </html>
 ';
 }
+?>

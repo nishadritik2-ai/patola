@@ -1,6 +1,6 @@
 <?php
 include "admin/connection.php";
-include "config_cashfree.php";
+include "config.php";
 
 header('Content-Type: application/json');
 
@@ -9,25 +9,40 @@ if (!isset($_SESSION['customer_id'])) {
     exit;
 }
 
-$user_id = $_SESSION['customer_id'];
+$user_id = intval($_SESSION['customer_id']);
 
-$name = mysqli_real_escape_string($con, $_POST['name']);
-$phone = mysqli_real_escape_string($con, $_POST['phone']);
-$address = mysqli_real_escape_string($con, $_POST['address']);
-$requirement = mysqli_real_escape_string($con, $_POST['requirement']);
+$name    = mysqli_real_escape_string($con, $_POST['name'] ?? '');
+$phone   = mysqli_real_escape_string($con, $_POST['phone'] ?? '');
+$address = mysqli_real_escape_string($con, $_POST['address'] ?? '');
 
-/* GET CART */
+if (empty($name) || empty($phone) || empty($address)) {
+    echo json_encode(["error" => "All fields required"]);
+    exit;
+}
+
+/* ================= GET CART WITH SIZE ================= */
 $query = mysqli_query($con, "
-    SELECT c.*, p.price
+    SELECT c.*, p.name, p.price, p.img
     FROM carts c
     JOIN product p ON c.product_id = p.id
     WHERE c.user_id = '$user_id'
 ");
 
 $total = 0;
+$cart_items = [];
 
 while ($row = mysqli_fetch_assoc($query)) {
-    $total += $row['price'] * $row['quantity'];
+
+    $item_total = $row['price'] * $row['quantity'];
+    $total += $item_total;
+
+    $cart_items[] = [
+        "product_id" => $row['product_id'],
+        "name"       => $row['name'],
+        "price"      => $row['price'],
+        "quantity"   => $row['quantity'],
+        "size"       => $row['size']
+    ];
 }
 
 if ($total <= 0) {
@@ -35,23 +50,27 @@ if ($total <= 0) {
     exit;
 }
 
+/* ================= GENERATE ORDER ID ================= */
 $orderId = "ORDER_" . time();
 
-/* SAVE TEMP ORDER DETAILS IN SESSION */
+/* ================= SAVE TEMP ORDER IN SESSION ================= */
 $_SESSION['temp_order'] = [
-    "name" => $name,
-    "phone" => $phone,
+    "name"    => $name,
+    "phone"   => $phone,
     "address" => $address,
-    "requirement" => $requirement
+    "cart"    => $cart_items,
+    "total"   => $total
 ];
 
+/* ================= CASHFREE DATA ================= */
 $data = [
     "order_id" => $orderId,
     "order_amount" => $total,
     "order_currency" => "INR",
     "customer_details" => [
         "customer_id" => (string)$user_id,
-        "customer_phone" => $phone
+        "customer_phone" => $phone,
+        "customer_name" => $name
     ],
     "order_meta" => [
         "return_url" => "http://localhost/patola/payment_success.php?order_id={order_id}"
@@ -65,6 +84,7 @@ $headers = [
     "x-api-version: 2022-09-01"
 ];
 
+/* ================= CURL REQUEST ================= */
 $ch = curl_init(CASHFREE_API_URL);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_POST, true);

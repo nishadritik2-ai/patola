@@ -8,12 +8,19 @@ if (!isset($_SESSION['customer_id'])) {
 
 $user_id = $_SESSION['customer_id'];
 
-$query = mysqli_query($con, "SELECT c.*, p.name, p.price, p.img FROM carts c JOIN product p ON c.product_id=p.id WHERE c.user_id='$user_id'");
+$query = mysqli_query($con, "
+    SELECT c.*, p.name, p.price, p.img 
+    FROM carts c 
+    JOIN product p ON c.product_id = p.id 
+    WHERE c.user_id = '$user_id'
+");
+
 $cartItems = mysqli_fetch_all($query, MYSQLI_ASSOC);
 $total = 0;
-
 ?>
+
 <?php include "header.php" ?>
+
 <style>
     body {
         background: #f5f6fa;
@@ -105,11 +112,14 @@ $total = 0;
 <div class="wrapper cus-p mb-5">
 
     <?php if (count($cartItems) === 0): ?>
+
         <div style="text-align:center; margin: 50px auto;">
             <h2>Your Cart is Empty</h2>
             <a href="shop.php" class="continue-btn">Continue Shopping</a>
         </div>
+
     <?php else: ?>
+
         <div class="left p-0 mt-2">
             <h2>Your Cart</h2>
 
@@ -117,12 +127,14 @@ $total = 0;
                 $total += $row['price'] * $row['quantity'];
             ?>
 
-                <div class="item cart-container " data-product="<?= $row['product_id'] ?>">
+                <div class="item cart-container"
+                    data-id="<?= $row['id'] ?>">
 
                     <img src="admin/<?= $row['img'] ?>">
 
                     <div style="flex:1">
-                        <h6><?= $row['name'] ?></h6>
+                        <h6><?= htmlspecialchars($row['name']) ?></h6>
+                        <small>Size: <strong><?= htmlspecialchars($row['size']) ?></strong></small><br>
                         ₹ <span class="price"><?= $row['price'] ?></span>
                     </div>
 
@@ -133,7 +145,9 @@ $total = 0;
                             <button class="plus">+</button>
                         </div>
 
-                        <div class="remove p-2 text-white mt-3 bg-danger">Remove</div>
+                        <div class="remove p-2 text-white mt-3 bg-danger">
+                            Remove
+                        </div>
                     </div>
 
                 </div>
@@ -141,7 +155,6 @@ $total = 0;
             <?php endforeach; ?>
 
         </div>
-
 
         <div class="right">
             <h3>Order Summary</h3>
@@ -154,8 +167,82 @@ $total = 0;
                 <button class="checkout-btn">Proceed to Checkout</button>
             </a>
         </div>
+
     <?php endif; ?>
 
 </div>
+
+<script>
+
+document.addEventListener("click", function(e){
+
+    let container = e.target.closest(".cart-container");
+    if(!container) return;
+
+    let cart_id = container.getAttribute("data-id");
+    let qtySpan = container.querySelector(".qty");
+    let qty = parseInt(qtySpan.innerText);
+
+    if(e.target.classList.contains("plus")){
+        send(cart_id, qty + 1, container);
+    }
+
+    if(e.target.classList.contains("minus")){
+        send(cart_id, qty - 1, container);
+    }
+
+    if(e.target.classList.contains("remove")){
+        send(cart_id, 0, container);
+    }
+
+});
+
+function send(cart_id, qty, container){
+
+    fetch("cart_action.php",{
+        method:"POST",
+        headers:{"Content-Type":"application/x-www-form-urlencoded"},
+        body:"cart_id="+cart_id+"&quantity="+qty
+    })
+    .then(res=>res.json())
+    .then(data=>{
+
+        if(data.status === "updated"){
+
+            if(qty <= 0){
+    container.remove();
+}else{
+    container.querySelector(".qty").innerText = qty;
+}
+
+updateTotals(); // 🔥 ADD THIS LINE
+
+        }else{
+            console.log(data);
+        }
+
+    });
+}
+
+function updateTotals() {
+
+    let subtotal = 0;
+
+    document.querySelectorAll(".cart-container").forEach(item => {
+
+        let price = parseFloat(item.querySelector(".price").innerText);
+        let qty = parseInt(item.querySelector(".qty").innerText);
+
+        subtotal += price * qty;
+    });
+
+    let sub = document.getElementById("subtotal");
+    let grand = document.getElementById("grandTotal");
+
+    if (sub) sub.innerText = subtotal.toFixed(2);
+    if (grand) grand.innerText = subtotal.toFixed(2);
+}
+
+</script>
 
 <?php include "footer.php" ?>

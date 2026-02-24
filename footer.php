@@ -105,101 +105,123 @@
  </div>
 
 
- <script>
-     document.addEventListener("click", function(e) {
+<script>
 
-         let container = e.target.closest(".cart-container");
-         if (!container) return;
+document.addEventListener("click", function(e) {
 
-         let product_id = container.dataset.product;
-         let qtySpan = container.querySelector(".qty");
-         let addBtn = container.querySelector(".add-btn");
-         let qtyBox = container.querySelector(".qty-box");
+    let container = e.target.closest(".cart-container");
+    if (!container) return;
 
-         let qty = parseInt(qtySpan?.innerText || 0);
+    let product_id = container.dataset.product;
+    let size = container.dataset.size;
 
-         if (e.target.classList.contains("add-btn")) {
-             qty = 1;
-             sendUpdate(product_id, qty, container);
-         }
+    let qtySpan = container.querySelector(".qty");
+    let addBtn = container.querySelector(".add-btn");
+    let qtyBox = container.querySelector(".qty-box");
 
-         if (e.target.classList.contains("plus")) {
-             qty++;
-             sendUpdate(product_id, qty, container);
-         }
+    /* ================= SIZE CLICK ================= */
+    if (e.target.classList.contains("size-btn")) {
 
-         if (e.target.classList.contains("minus")) {
-             qty--;
-             sendUpdate(product_id, qty, container);
-         }
+        container.querySelectorAll(".size-btn").forEach(btn => {
+            btn.classList.remove("active");
+        });
 
-         if (e.target.classList.contains("remove")) {
-             qty = 0;
-             sendUpdate(product_id, qty, container);
-         }
+        e.target.classList.add("active");
 
-     });
+        size = e.target.dataset.size;
+        container.dataset.size = size;
 
-     function sendUpdate(product_id, qty, container) {
+        let qty = parseInt(e.target.dataset.qty);
 
-         fetch("cart_action.php", {
-                 method: "POST",
-                 headers: {
-                     "Content-Type": "application/x-www-form-urlencoded"
-                 },
-                 body: "product_id=" + product_id + "&quantity=" + qty
-             })
-             .then(res => res.json())
-             .then(data => {
+        if (qty > 0) {
+            qtySpan.innerText = qty;
+            addBtn.style.display = "none";
+            qtyBox.style.display = "flex";
+        } else {
+            qtySpan.innerText = "1";
+            addBtn.style.display = "block";
+            qtyBox.style.display = "none";
+        }
 
-                 if (data.status == "updated") {
+        return;
+    }
 
-                     let qtySpan = container.querySelector(".qty");
-                     let addBtn = container.querySelector(".add-btn");
-                     let qtyBox = container.querySelector(".qty-box");
+    let qty = parseInt(qtySpan.innerText);
 
-                     // ===== IF QTY ZERO =====
-                     if (qty <= 0) {
+    /* ================= ADD TO CART ================= */
+    if (e.target.classList.contains("add-btn")) {
 
-                         // If it's cart page (has .item class)
-                         if (container.classList.contains("item")) {
-                             container.remove(); // remove from cart page
-                         }
+        if (!size) {
+            alert("Please select size");
+            return;
+        }
 
-                         // If product page
-                         if (addBtn) addBtn.style.display = "block";
-                         if (qtyBox) qtyBox.style.display = "none";
+        updateCart(product_id, size, 1, container);
+        return;
+    }
 
-                     } else {
+    /* ================= PLUS ================= */
+    if (e.target.classList.contains("plus")) {
+        updateCart(product_id, size, qty + 1, container);
+        return;
+    }
 
-                         if (qtySpan) qtySpan.innerText = qty;
-                         if (addBtn) addBtn.style.display = "none";
-                         if (qtyBox) qtyBox.style.display = "flex";
+    /* ================= MINUS ================= */
+    if (e.target.classList.contains("minus")) {
+        updateCart(product_id, size, qty - 1, container);
+        return;
+    }
 
-                     }
-
-                     document.getElementById("cartCount").innerText = data.cart_count;
-                     updateTotal();
-
-                 }
-
-             });
-     }
+});
 
 
-     function updateTotal() {
-         let subtotal = 0;
-         document.querySelectorAll(".item").forEach(item => {
-             let price = parseInt(item.querySelector(".price")?.innerText || 0);
-             let qty = parseInt(item.querySelector(".qty")?.innerText || 0);
-             subtotal += price * qty;
-         });
-         let sub = document.getElementById("subtotal");
-         let grand = document.getElementById("grandTotal");
-         if (sub) sub.innerText = subtotal;
-         if (grand) grand.innerText = subtotal;
-     }
- </script>
+function updateCart(product_id, size, qty, container) {
+
+    fetch("cart_action.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: "product_id=" + product_id +
+              "&size=" + size +
+              "&quantity=" + qty
+    })
+    .then(res => res.json())
+    .then(data => {
+
+        if (data.status !== "updated") return;
+
+        let qtySpan = container.querySelector(".qty");
+        let addBtn = container.querySelector(".add-btn");
+        let qtyBox = container.querySelector(".qty-box");
+        let activeBtn = container.querySelector(".size-btn.active");
+
+        if (qty <= 0) {
+
+            if (activeBtn) activeBtn.dataset.qty = 0;
+
+            addBtn.style.display = "block";
+            qtyBox.style.display = "none";
+
+        } else {
+
+            if (activeBtn) activeBtn.dataset.qty = qty;
+
+            qtySpan.innerText = qty;
+            addBtn.style.display = "none";
+            qtyBox.style.display = "flex";
+        }
+
+        let cartCount = document.getElementById("cartCount");
+        if (cartCount) {
+            cartCount.innerText = data.cart_count;
+        }
+
+    });
+    
+
+}
+
+
+</script>
 
 
  <!-- JavaScript Libraries -->

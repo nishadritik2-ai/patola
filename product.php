@@ -74,99 +74,132 @@ while ($row = mysqli_fetch_assoc($result)) {
                         <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                             Buy Now
                         </button> -->
-                        <div class="row g-2">
-                            <div class="col-12 d-flex gap-2">
-                                <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                    Buy Now
-                                </button> -->
-                                <div class="cart-container" data-product="<?= $row['id'] ?>">
-                                <h5 class="mb-4" style="color:#97621e">Size Available : <?= $row['size'] ?></h5>
-                                    <button class="add-btn btn btn-primary">Add to Cart</button>
-                                    <div class="qty-box" style="display:none;padding: 5px 15px;border: 1px solid #000;border-radius: 21px;">
-                                        <button class="minus btn btn-sm btn-outline-secondary" aria-label="Decrease quantity">−</button>
-                                        <span class="qty mx-2">1</span>
-                                        <button class="plus btn btn-sm btn-outline-secondary" aria-label="Increase quantity">+</button>
-                                    </div>
-                                </div>
+                        <?php
+                        $sizes = explode(",", $row['size']);
+                        $existingSizes = [];
+
+                        if (isset($_SESSION['customer_id'])) {
+                            $uid = $_SESSION['customer_id'];
+                            $pid = $row['id'];
+
+                            $checkCart = mysqli_query($con, "
+        SELECT size, quantity 
+        FROM carts 
+        WHERE user_id='$uid' 
+        AND product_id='$pid'
+    ");
+
+                            while ($c = mysqli_fetch_assoc($checkCart)) {
+                                $existingSizes[$c['size']] = $c['quantity'];
+                            }
+                        }
+                        ?>
+
+                        <div class="cart-container"
+                            data-product="<?= $row['id'] ?>"
+                            data-size="">
+
+                            <h5>Select Size:</h5>
+
+                            <div class="size-wrapper mb-3">
+                                <?php foreach ($sizes as $s):
+                                    $s = trim($s);
+                                    $qty = $existingSizes[$s] ?? 0;
+                                ?>
+                                    <button type="button"
+                                        class="size-btn btn btn-outline-dark m-1"
+                                        data-size="<?= $s ?>"
+                                        data-qty="<?= $qty ?>">
+                                        <?= $s ?>
+                                    </button>
+                                <?php endforeach; ?>
                             </div>
+
+                            <button class="add-btn btn btn-primary">
+                                Add to Cart
+                            </button>
+
+                            <div class="qty-box mt-2"
+                                style="display:none;padding:5px 15px;border:1px solid #000;border-radius:21px;width:120px">
+                                <button class="minus btn btn-sm btn-outline-secondary">−</button>
+                                <span class="qty mx-2">1</span>
+                                <button class="plus btn btn-sm btn-outline-secondary">+</button>
+                            </div>
+
+                            
                         </div>
-
-
-                        <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                            Add to Cart
-                        </button> -->
 
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6 wow fadeInRight" data-wow-delay="0.2s" style="justify-items: center;">
 
-    <div id="imageSlider"
-        class="carousel slide rounded position-relative overflow-hidden"
-        data-bs-ride="carousel">
+                    <div id="imageSlider"
+                        class="carousel slide rounded position-relative overflow-hidden"
+                        data-bs-ride="carousel">
 
-        <!-- Indicators -->
-        <div class="carousel-indicators">
-            <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="0" class="active"></button>
-            <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="1"></button>
-            <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="2"></button>
-            <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="3"></button>
-            <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="4"></button>
-        </div>
+                        <!-- Indicators -->
+                        <div class="carousel-indicators">
+                            <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="0" class="active"></button>
+                            <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="1"></button>
+                            <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="2"></button>
+                            <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="3"></button>
+                            <button type="button" data-bs-target="#imageSlider" data-bs-slide-to="4"></button>
+                        </div>
 
-        <!-- Slider Images -->
-        <div class="carousel-inner">
+                        <!-- Slider Images -->
+                        <div class="carousel-inner">
 
-            <!-- Main Image -->
-            <div class="carousel-item active">
-                <img src="admin/<?php echo $row['img']; ?>" class="d-block w-100" alt="">
-            </div>
+                            <!-- Main Image -->
+                            <div class="carousel-item active">
+                                <img src="admin/<?php echo $row['img']; ?>" class="d-block w-100" alt="">
+                            </div>
 
-            <!-- Image 2 -->
-            <?php if(!empty($row['img2'])) { ?>
-            <div class="carousel-item">
-                <img src="admin/<?php echo $row['img2']; ?>" class="d-block w-100" alt="">
-            </div>
-            <?php } ?>
+                            <!-- Image 2 -->
+                            <?php if (!empty($row['img2'])) { ?>
+                                <div class="carousel-item">
+                                    <img src="admin/<?php echo $row['img2']; ?>" class="d-block w-100" alt="">
+                                </div>
+                            <?php } ?>
 
-            <!-- Image 3 -->
-            <?php if(!empty($row['img3'])) { ?>
-            <div class="carousel-item">
-                <img src="admin/<?php echo $row['img3']; ?>" class="d-block w-100" alt="">
-            </div>
-            <?php } ?>
+                            <!-- Image 3 -->
+                            <?php if (!empty($row['img3'])) { ?>
+                                <div class="carousel-item">
+                                    <img src="admin/<?php echo $row['img3']; ?>" class="d-block w-100" alt="">
+                                </div>
+                            <?php } ?>
 
-            <!-- Image 4 -->
-            <?php if(!empty($row['img4'])) { ?>
-            <div class="carousel-item">
-                <img src="admin/<?php echo $row['img4']; ?>" class="d-block w-100" alt="">
-            </div>
-            <?php } ?>
+                            <!-- Image 4 -->
+                            <?php if (!empty($row['img4'])) { ?>
+                                <div class="carousel-item">
+                                    <img src="admin/<?php echo $row['img4']; ?>" class="d-block w-100" alt="">
+                                </div>
+                            <?php } ?>
 
-            <!-- Static Size Image (Optional) -->
-            <div class="carousel-item">
-                <img src="img/pro-size.jpeg" class="d-block w-100" alt="">
-            </div>
+                            <!-- Static Size Image (Optional) -->
+                            <div class="carousel-item">
+                                <img src="img/pro-size.jpeg" class="d-block w-100" alt="">
+                            </div>
 
-        </div>
+                        </div>
 
-        <!-- Controls -->
-        <button class="carousel-control-prev"
-            type="button"
-            data-bs-target="#imageSlider"
-            data-bs-slide="prev" style="background-color: black;">
-            <span class="carousel-control-prev-icon"></span>
-        </button>
+                        <!-- Controls -->
+                        <button class="carousel-control-prev"
+                            type="button"
+                            data-bs-target="#imageSlider"
+                            data-bs-slide="prev" style="background-color: black;">
+                            <span class="carousel-control-prev-icon"></span>
+                        </button>
 
-        <button class="carousel-control-next"
-            type="button"
-            data-bs-target="#imageSlider"
-            data-bs-slide="next" style="background-color: black;">
-            <span class="carousel-control-next-icon"></span>
-        </button>
+                        <button class="carousel-control-next"
+                            type="button"
+                            data-bs-target="#imageSlider"
+                            data-bs-slide="next" style="background-color: black;">
+                            <span class="carousel-control-next-icon"></span>
+                        </button>
 
-    </div>
+                    </div>
 
-</div>
+                </div>
             </div>
         </div>
     </div>

@@ -1,129 +1,120 @@
 <?php
-include "header.php";
+ob_start();
+include "config.php";
+include "admin/connection.php";
+$error = "";
 
-// Error reporting (optional during development)
-// error_reporting(E_ALL);
-// ini_set('display_errors', 1);
-
-if (isset($_POST['login'])) {
+/* ==============================
+   LOGIN WITH PASSWORD
+============================== */
+if (isset($_POST['password_login'])) {
 
     $email = mysqli_real_escape_string($con, $_POST['email']);
     $password = $_POST['password'];
 
-    if (empty($email) || empty($password)) {
+    $query = mysqli_query($con, "SELECT * FROM customer WHERE email='$email'");
 
-        echo "<script>
-Swal.fire({
-    icon: 'warning',
-    title: 'Missing Fields',
-    text: 'Please enter email and password.'
-});
-</script>";
-    } else {
+    if (mysqli_num_rows($query) > 0) {
 
-        $sql = "SELECT * FROM customer WHERE email='$email'";
-        $result = mysqli_query($con, $sql);
+        $row = mysqli_fetch_assoc($query);
 
-        if (mysqli_num_rows($result) > 0) {
+        if (password_verify($password, $row['password'])) {
 
-            $row = mysqli_fetch_assoc($result);
+            $_SESSION['customer_id'] = $row['id'];
+            $_SESSION['customer_name'] = $row['name'];
 
-            if (password_verify($password, $row['password'])) {
-
-                $_SESSION['customer_id'] = $row['id'];
-                $_SESSION['customer_name'] = $row['name'];
-
-                echo "<script>
-Swal.fire({
-    icon: 'success',
-    title: 'Login Successful!',
-    text: 'Welcome back!',
-    confirmButtonColor: '#3085d6'
-}).then(() => {
-    window.location='index.php';
-});
-</script>";
-            } else {
-                echo "<script>
-Swal.fire({
-    icon: 'error',
-    title: 'Incorrect Password',
-    text: 'Please try again.'
-});
-</script>";
-            }
+            header("Location: index.php");
+            exit;
         } else {
-            echo "<script>
-Swal.fire({
-    icon: 'error',
-    title: 'Email Not Found',
-    text: 'This email is not registered.'
-});
-</script>";
+            $error = "Incorrect password.";
         }
+    } else {
+        $error = "Email not registered.";
+    }
+}
+
+
+/* ==============================
+   LOGIN WITH OTP
+============================== */
+if (isset($_POST['send_otp'])) {
+
+    $email = mysqli_real_escape_string($con, $_POST['email']);
+
+    $check = mysqli_query($con, "SELECT * FROM customer WHERE email='$email'");
+
+    if (mysqli_num_rows($check) > 0) {
+
+        $otp = rand(100000, 999999);
+        $expiry = date("Y-m-d H:i:s", strtotime("+10 minutes"));
+
+        mysqli_query($con, "UPDATE customer SET otp='$otp', otp_expiry='$expiry' WHERE email='$email'");
+
+        require "includes/mail_config.php";
+
+        if (sendOTP($email, $otp)) {
+
+            $_SESSION['otp_email'] = $email;
+            header("Location: verify_otp.php");
+            exit;
+        } else {
+            $error = "Failed to send OTP.";
+        }
+    } else {
+        $error = "Email not registered.";
     }
 }
 ?>
 
+<?php include "header.php"; ?>
 
+<div class="container py-5 cus-p">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
 
-<section>
-    <div class="container">
-        <div class="row d-flex justify-content-center align-items-center py-5 cus-p  ">
+            <div class="card shadow-lg p-4 rounded-4 border-0">
 
-            <div class="col-lg-6 col-md-6">
-                <img src="img/login.webp" class="rounded" style="width: 100%;" alt="Sample image">
-            </div>
+                <h3 class="text-center mb-4 fw-bold">Customer Login</h3>
 
-            <div class="col-lg-6 col-md-6 ">
-
-                <!-- Logo Section -->
-                <div class="text-center mb-4">
-                    <img src="img/logo2.png" alt="Website Logo"
-                        style="max-width:220px; height:auto;">
-                </div>
-
-                <!-- Heading Section -->
-                <div class="text-center mb-4">
-                    <h2 class="fw-bold">Patola Fashion Boutique</h2>
-                    <p class="text-muted">Login to your account</p>
-                </div>
+                <?php if ($error != "") { ?>
+                    <div class="alert alert-danger"><?php echo $error; ?></div>
+                <?php } ?>
 
                 <form method="POST">
 
-                    <!-- Email -->
-                    <div class="form-outline mb-4">
-                        <input name="email" type="email"
-                            class="form-control form-control-lg"
-                            placeholder="Enter a valid email address" required />
-                        <label class="form-label">Email address</label>
+                    <div class="mb-3">
+                        <label>Email Address</label>
+                        <input type="email" name="email" class="form-control form-control-lg" required>
                     </div>
 
-                    <!-- Password -->
-                    <div class="form-outline mb-3">
-                        <input name="password" type="password"
-                            class="form-control form-control-lg"
-                            placeholder="Enter password" required />
-                        <label class="form-label">Password</label>
+                    <div class="mb-3">
+                        <label>Password</label>
+                        <input type="password" name="password" class="form-control form-control-lg">
                     </div>
 
-                    <div class="text-center text-lg-start mt-4 pt-2">
-                        <button name="login" type="submit"
-                            class="btn btn-primary btn-lg w-100">
-                            Login
+                    <div class="d-grid gap-2">
+
+                        <button type="submit" name="password_login"
+                            class="btn btn-dark btn-lg">
+                            Login with Password
                         </button>
 
-                        <p class="small fw-bold mt-3 mb-0 text-center">
-                            Don't have an account?
-                            <a href="register.php" class="link-danger">Register</a>
-                        </p>
+                        <button type="submit" name="send_otp"
+                            class="btn btn-outline-primary btn-lg">
+                            Login with OTP
+                        </button>
+
                     </div>
 
                 </form>
-            </div>
 
+                <!-- <div class="text-center mt-3">
+                    <a href="forgot_password.php">Forgot Password?</a>
+                </div> -->
+
+            </div>
         </div>
     </div>
-</section>
+</div>
 
 <?php include "footer.php"; ?>

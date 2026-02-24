@@ -118,5 +118,9 @@ if ($res && $row = $res->fetch_assoc()) {
                     <li class="nav-item">
                         <a class="nav-link" href="logout.php"><i class="bi bi-box-seam me-2"></i> Logout</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pass-reset.php"><i class="bi bi-box-seam me-2"></i> Password Reset</a>
+                    </li>
+
                 </ul>
             </nav>

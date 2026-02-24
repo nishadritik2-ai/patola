@@ -1,58 +1,105 @@
 <?php
-
+ob_start();
 session_start();
 require "connection.php";
 
 $error = "";
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+/* ===========================
+   PASSWORD LOGIN
+=========================== */
+if (isset($_POST['password_login'])) {
+
     $email = trim($_POST['email']);
     $password = $_POST['password'];
 
     if (!empty($email) && !empty($password)) {
 
-        $stmt = mysqli_prepare($conn, "SELECT id, password FROM users WHERE email = ?");
+        $stmt = mysqli_prepare($conn, "SELECT id, password FROM users WHERE email=?");
         mysqli_stmt_bind_param($stmt, "s", $email);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_store_result($stmt);
 
         if (mysqli_stmt_num_rows($stmt) === 1) {
+
             mysqli_stmt_bind_result($stmt, $id, $hashedPassword);
             mysqli_stmt_fetch($stmt);
 
             if (password_verify($password, $hashedPassword)) {
-                $_SESSION['user'] = [
-                    'id' => $id
-                ];
-                // header("Location: dashboard.php");
+
+                session_regenerate_id(true);
+                $_SESSION['user'] = ['id' => $id];
+
                 header("Location: all-product.php");
                 exit;
+
             } else {
                 $error = "Invalid password";
             }
+
         } else {
-            $error = "User not found";
+            $error = "Admin not found";
         }
     } else {
-        $error = "All fields are required";
+        $error = "All fields required";
+    }
+}
+
+
+/* ===========================
+   OTP LOGIN
+=========================== */
+if (isset($_POST['send_otp'])) {
+
+    $email = trim($_POST['email']);
+
+    if (!empty($email)) {
+
+        $stmt = mysqli_prepare($conn, "SELECT id FROM users WHERE email=?");
+        mysqli_stmt_bind_param($stmt, "s", $email);
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_store_result($stmt);
+
+        if (mysqli_stmt_num_rows($stmt) === 1) {
+
+            mysqli_stmt_bind_result($stmt, $id);
+            mysqli_stmt_fetch($stmt);
+
+            $otp = rand(100000, 999999);
+            $expiry = date("Y-m-d H:i:s", strtotime("+10 minutes"));
+
+            $update = mysqli_prepare($conn, "UPDATE users SET otp=?, otp_expiry=? WHERE id=?");
+            mysqli_stmt_bind_param($update, "ssi", $otp, $expiry, $id);
+            mysqli_stmt_execute($update);
+
+            require "../includes/mail_config.php";
+
+            if (sendOTP($email, $otp, "Admin Login OTP")) {
+
+                $_SESSION['admin_otp_email'] = $email;
+                header("Location: admin_verify_otp.php");
+                exit;
+
+            } else {
+                $error = "Failed to send OTP";
+            }
+
+        } else {
+            $error = "Admin not found";
+        }
+
+    } else {
+        $error = "Email required";
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>Login</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
+    <title>Admin Login</title>
     <style>
-        /* Body Background */
         body {
             margin: 0;
-            padding: 0;
             height: 100vh;
             font-family: 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
@@ -61,108 +108,81 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             align-items: center;
         }
 
-        /* Card Styling */
         .card {
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            padding: 40px 35px;
-            width: 350px;
+            padding: 40px;
+            width: 380px;
             border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
             text-align: center;
-            animation: fadeIn 0.6s ease-in-out;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         }
 
-        /* Heading */
         .card h2 {
-            color: #fff;
-            margin-bottom: 25px;
-            font-weight: 600;
+            color: white;
+            margin-bottom: 20px;
         }
 
-        /* Input Fields */
         .card input {
             width: 100%;
-            padding: 12px 14px;
-            margin-bottom: 18px;
+            padding: 12px;
+            margin-bottom: 15px;
             border-radius: 10px;
             border: none;
             outline: none;
-            font-size: 14px;
-            transition: 0.3s;
         }
 
-        .card input:focus {
-            box-shadow: 0 0 0 2px #ffffff80;
-        }
-
-        /* Button */
         .btn {
             width: 100%;
             padding: 12px;
-            border: none;
             border-radius: 10px;
-            background: linear-gradient(135deg, #ffffff, #f1f1f1);
-            color: #333;
-            font-weight: 600;
+            border: none;
             cursor: pointer;
-            transition: 0.3s;
+            margin-bottom: 10px;
+            font-weight: bold;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        .btn-dark {
+            background: #000;
+            color: white;
         }
 
-        /* Error Message */
+        .btn-outline {
+            background: white;
+            color: #000;
+        }
+
         .error {
-            background: rgba(255, 0, 0, 0.15);
-            color: #fff;
-            padding: 8px 12px;
+            background: rgba(255, 0, 0, 0.2);
+            color: white;
+            padding: 8px;
             border-radius: 8px;
-            font-size: 13px;
             margin-bottom: 15px;
         }
-
-        /* Animation */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .card input {
-            width: 100%;
-            padding: 12px 14px;
-            margin-bottom: 18px;
-            border-radius: 10px;
-            border: none;
-            outline: none;
-            font-size: 14px;
-            box-sizing: border-box;
-        }
     </style>
-    <div class="card">
-        <h2>Admin Login</h2>
+</head>
+<body>
 
-        <?php if ($error): ?>
-            <p class="error"><?= htmlspecialchars($error) ?></p>
-        <?php endif; ?>
+<div class="card">
+    <h2>Admin Login</h2>
 
-        <form method="POST">
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button class="btn">Login</button>
-        </form>
-    </div>
+    <?php if($error): ?>
+        <div class="error"><?= htmlspecialchars($error) ?></div>
+    <?php endif; ?>
+
+    <form method="POST">
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password">
+
+        <button type="submit" name="password_login" class="btn btn-dark">
+            Login with Password
+        </button>
+
+        <button type="submit" name="send_otp" class="btn btn-outline">
+            Login with OTP
+        </button>
+    </form>
+</div>
 
 </body>
-
 </html>
