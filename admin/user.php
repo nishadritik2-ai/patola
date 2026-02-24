@@ -123,7 +123,7 @@ if (isset($_POST['submit'])) {
 
             <div class="mb-3">
                 <label for="exampleInputName" class="form-label">Slug</label>
-                <input name="slug" type="text" placeholder="Enter Slug name" class="form-control">
+                <input name="slug" type="text" placeholder="Enter Slug name ( all small letter and for space use - )" class="form-control">
             </div>
 
             <div class="row">

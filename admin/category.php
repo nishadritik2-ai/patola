@@ -42,11 +42,11 @@ if (isset($_POST['submit'])) {
         <form method="post" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="exampleInputName" class="form-label">Product Category</label>
-                <input name="name" type="text" placeholder="Enter product Name" class="form-control" id="exampleInputname">
+                <input name="name" type="text" placeholder="Enter Category Name" class="form-control" id="exampleInputname">
             </div>
             <div class="mb-3">
                 <label for="exampleInputName" class="form-label">Slug</label>
-                <input name="slug" type="text" placeholder="Enter Slug name" class="form-control" id="exampleInputname">
+                <input name="slug" type="text" placeholder="Enter Slug name ( all small letter and for space use - )" class="form-control" id="exampleInputname">
             </div>
             <div class="mb-3">
                 <label for="exampleInputName" class="form-label">Image</label> <br>
